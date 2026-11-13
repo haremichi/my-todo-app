@@ -1,0 +1,12 @@
+
+{
+  "name": "MY TODO",
+  "short_name": "TODO",
+  "description": "シンプルなタスク管理アプリ",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f3f3ee",
+  "theme_color": "#202820",
+  "lang": "ja"
+}
