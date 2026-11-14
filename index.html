@@ -130,14 +130,23 @@ placeholder="新しいタスクを入力..." required>
 let tasks = JSON.parse(
   localStorage.getItem("myTodoTasks") || "[]"
 );
+tasks.forEach(task => {
+  if (typeof task.xpClaimed !== "boolean") {
+    task.xpClaimed = task.done;
+  }
+});
 
+let experience = Number(
+  localStorage.getItem("myTodoXP") || "0"
+);
 const form = document.getElementById("form");
 const input = document.getElementById("taskInput");
 const list = document.getElementById("taskList");
 const count = document.getElementById("count");
-
+const xpDisplay = document.getElementById("xp");
 function save() {
   localStorage.setItem("myTodoTasks", JSON.stringify(tasks));
+  localStorage.setItem("myTodoXP", String(experience));
   render();
 }
 
@@ -145,6 +154,8 @@ function render() {
   list.innerHTML = "";
   const remaining = tasks.filter(t => !t.done).length;
   count.textContent = `${remaining} / ${tasks.length} TASKS REMAINING`;
+
+  xpDisplay.textContent = `${experience} XP`;
 
   if (tasks.length === 0) {
     list.innerHTML = '<li class="empty">タスクはありません</li>';
