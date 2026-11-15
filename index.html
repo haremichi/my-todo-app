@@ -139,6 +139,12 @@ tasks.forEach(task => {
 let experience = Number(
   localStorage.getItem("myTodoXP") || "0"
 );
+
+// 経験値の獲得履歴を読み込む
+let xpHistory = JSON.parse(
+  localStorage.getItem("myTodoXPHistory") || "[]"
+);
+
 const form = document.getElementById("form");
 const input = document.getElementById("taskInput");
 const list = document.getElementById("taskList");
