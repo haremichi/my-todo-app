@@ -150,6 +150,17 @@ const input = document.getElementById("taskInput");
 const list = document.getElementById("taskList");
 const count = document.getElementById("count");
 const xpDisplay = document.getElementById("xp");
+
+// 毎日のログインボーナス
+const today = new Date().toLocaleDateString("sv-SE");
+const loginKey = `login_${today}`;
+
+if (!xpHistory.includes(loginKey)) {
+  experience += 30;
+  xpHistory.push(loginKey);
+  save();
+}
+
 function save() {
   localStorage.setItem("myTodoTasks", JSON.stringify(tasks));
   localStorage.setItem("myTodoXP", String(experience));
