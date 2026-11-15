@@ -200,6 +200,7 @@ const loginKey = `login_${today}`;
 if (!xpHistory.includes(loginKey)) {
   experience += 30;
   xpHistory.push(loginKey);
+  showXpEffect("DAILY BONUS ＋30 XP！");
   save();
 }
 
