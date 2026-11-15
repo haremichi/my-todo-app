@@ -235,9 +235,10 @@ function render() {
   const historyKey = `${task.text.trim()}_${today}`;
 
   if (check.checked && !xpHistory.includes(historyKey)) {
-    experience += 10;
-    xpHistory.push(historyKey);
-  }
+  experience += 10;
+  xpHistory.push(historyKey);
+  showXpEffect("＋10 XP！");
+}
 
   task.done = check.checked;
   save();
