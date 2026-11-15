@@ -178,9 +178,12 @@ function render() {
     check.checked = task.done;
     
   check.addEventListener("change", () => {
-  if (check.checked && !task.xpClaimed) {
+  const today = new Date().toLocaleDateString("sv-SE");
+  const historyKey = `${task.id}_${today}`;
+
+  if (check.checked && !xpHistory.includes(historyKey)) {
     experience += 10;
-    task.xpClaimed = true;
+    xpHistory.push(historyKey);
   }
 
   task.done = check.checked;
