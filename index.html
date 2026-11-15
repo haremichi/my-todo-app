@@ -153,6 +153,7 @@ const xpDisplay = document.getElementById("xp");
 function save() {
   localStorage.setItem("myTodoTasks", JSON.stringify(tasks));
   localStorage.setItem("myTodoXP", String(experience));
+  localStorage.setItem("myTodoXPHistory", JSON.stringify(xpHistory));
   render();
 }
 
