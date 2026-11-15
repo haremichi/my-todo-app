@@ -179,7 +179,7 @@ function render() {
     
   check.addEventListener("change", () => {
   const today = new Date().toLocaleDateString("sv-SE");
-  const historyKey = `${task.id}_${today}`;
+  const historyKey = `${task.text.trim()}_${today}`;
 
   if (check.checked && !xpHistory.includes(historyKey)) {
     experience += 10;
@@ -189,7 +189,6 @@ function render() {
   task.done = check.checked;
   save();
 });
-
     const name = document.createElement("span");
     name.textContent = task.text;
 
