@@ -197,13 +197,6 @@ function showXpEffect(message) {
 const today = new Date().toLocaleDateString("sv-SE");
 const loginKey = `login_${today}`;
 
-if (!xpHistory.includes(loginKey)) {
-  experience += 30;
-  xpHistory.push(loginKey);
-  showXpEffect("DAILY BONUS ＋30 XP！");
-  save();
-}
-
 function save() {
   localStorage.setItem("myTodoTasks", JSON.stringify(tasks));
   localStorage.setItem("myTodoXP", String(experience));
