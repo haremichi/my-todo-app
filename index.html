@@ -185,6 +185,14 @@ const count = document.getElementById("count");
 const xpDisplay = document.getElementById("xp");
 const xpEffect = document.getElementById("xpEffect");
 
+// XP獲得エフェクトを表示する関数
+function showXpEffect(message) {
+  xpEffect.textContent = message;
+  xpEffect.classList.remove("show");
+  void xpEffect.offsetWidth;
+  xpEffect.classList.add("show");
+}
+
 // 毎日のログインボーナス
 const today = new Date().toLocaleDateString("sv-SE");
 const loginKey = `login_${today}`;
