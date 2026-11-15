@@ -201,6 +201,26 @@ function showXpEffect(message) {
 const today = new Date().toLocaleDateString("sv-SE");
 const loginKey = `login_${today}`;
 
+// ボーナス受け取りボタン
+if (xpHistory.includes(loginKey)) {
+  loginBonus.textContent = "🎁 また明日！";
+  loginBonus.disabled = true;
+}
+
+loginBonus.addEventListener("click", () => {
+  if (xpHistory.includes(loginKey)) return;
+
+  experience += 30;
+  xpHistory.push(loginKey);
+
+  showXpEffect("DAILY BONUS ＋30 XP！");
+
+  loginBonus.textContent = "🎁 また明日！";
+  loginBonus.disabled = true;
+
+  save();
+});
+
 function save() {
   localStorage.setItem("myTodoTasks", JSON.stringify(tasks));
   localStorage.setItem("myTodoXP", String(experience));
