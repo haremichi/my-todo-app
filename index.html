@@ -169,10 +169,16 @@ function render() {
     const check = document.createElement("input");
     check.type = "checkbox";
     check.checked = task.done;
-    check.addEventListener("change", () => {
-      task.done = check.checked;
-      save();
-    });
+    
+  check.addEventListener("change", () => {
+  if (check.checked && !task.xpClaimed) {
+    experience += 10;
+    task.xpClaimed = true;
+  }
+
+  task.done = check.checked;
+  save();
+});
 
     const name = document.createElement("span");
     name.textContent = task.text;
