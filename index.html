@@ -305,7 +305,8 @@ form.addEventListener("submit", e => {
   tasks.push({
     id: Date.now(),
     text: text,
-    done: false
+    done: false,
+    priority: priorityInput.value
   });
 
   input.value = "";
