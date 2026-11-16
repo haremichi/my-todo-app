@@ -295,7 +295,14 @@ const priorityStars = {
 
 name.textContent = `${priorityStars[task.priority] || "☆"}　${task.text}`;
 
-    const edit = document.createElement("button");
+const priorityLabel = document.createElement("span");
+priorityLabel.className = "priority-label";
+
+if (task.priority === "top") {
+  priorityLabel.textContent = "きゃない！";
+}
+
+const edit = document.createElement("button");
     edit.textContent = "編集";
     edit.addEventListener("click", () => {
       const value = prompt("タスクを編集", task.text);
@@ -315,7 +322,7 @@ name.textContent = `${priorityStars[task.priority] || "☆"}　${task.text}`;
       }
     });
 
-    li.append(check, name, edit, del);
+    li.append(check, name, priorityLabel, edit, del);
     list.appendChild(li);
   });
 }
