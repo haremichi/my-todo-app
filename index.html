@@ -363,20 +363,89 @@ form.addEventListener("submit", e => {
   save();
 });
 
+
 // 長期目標を画面に表示する
 function renderLongTerm() {
   longTermList.innerHTML = "";
 
   longTermTasks.forEach(task => {
     const li = document.createElement("li");
-    const name = document.createElement("span");
 
+    // 達成チェック
+    const check = document.createElement("input");
+    check.type = "checkbox";
+    check.checked = task.done;
+
+    check.addEventListener("change", () => {
+      task.done = check.checked;
+
+      localStorage.setItem(
+        "myLongTermTasks",
+        JSON.stringify(longTermTasks)
+      );
+
+      renderLongTerm();
+    });
+
+    // 目標の名前
+    const name = document.createElement("span");
     name.textContent = task.text;
 
+    if (task.done) {
+      name.style.textDecoration = "line-through";
+      name.style.opacity = "0.5";
+    }
+
+    // 編集ボタン
+    const editButton = document.createElement("button");
+    editButton.textContent = "編集";
+
+    editButton.addEventListener("click", () => {
+      const newText = prompt("目標を編集する", task.text);
+
+      if (newText === null) return;
+
+      const text = newText.trim();
+      if (!text) return;
+
+      task.text = text;
+
+      localStorage.setItem(
+        "myLongTermTasks",
+        JSON.stringify(longTermTasks)
+      );
+
+      renderLongTerm();
+    });
+
+    // 削除ボタン
+    const deleteButton = document.createElement("button");
+    deleteButton.textContent = "削除";
+
+    deleteButton.addEventListener("click", () => {
+      if (!confirm("この目標を削除しますか？")) return;
+
+      longTermTasks = longTermTasks.filter(
+        item => item.id !== task.id
+      );
+
+      localStorage.setItem(
+        "myLongTermTasks",
+        JSON.stringify(longTermTasks)
+      );
+
+      renderLongTerm();
+    });
+
+    li.appendChild(check);
     li.appendChild(name);
+    li.appendChild(editButton);
+    li.appendChild(deleteButton);
+
     longTermList.appendChild(li);
   });
 }
+
 
 // 長期目標を追加する
 longTermForm.addEventListener("submit", e => {
