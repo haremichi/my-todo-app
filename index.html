@@ -358,7 +358,45 @@ form.addEventListener("submit", e => {
   save();
 });
 
+// 長期目標を画面に表示する
+function renderLongTerm() {
+  longTermList.innerHTML = "";
+
+  longTermTasks.forEach(task => {
+    const li = document.createElement("li");
+    const name = document.createElement("span");
+
+    name.textContent = task.text;
+
+    li.appendChild(name);
+    longTermList.appendChild(li);
+  });
+}
+
+// 長期目標を追加する
+longTermForm.addEventListener("submit", e => {
+  e.preventDefault();
+
+  const text = longTermInput.value.trim();
+  if (!text) return;
+
+  longTermTasks.push({
+    id: Date.now(),
+    text: text,
+    done: false
+  });
+
+  localStorage.setItem(
+    "myLongTermTasks",
+    JSON.stringify(longTermTasks)
+  );
+
+  longTermInput.value = "";
+  renderLongTerm();
+});
+
 render();
+renderLongTerm();
 </script>
 </body>
 </html>
