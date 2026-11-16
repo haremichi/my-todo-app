@@ -261,10 +261,18 @@ function render() {
   const historyKey = `${task.text.trim()}_${today}`;
 
   if (check.checked && !xpHistory.includes(historyKey)) {
-  experience += 10;
-  xpHistory.push(historyKey);
-  showXpEffect("＋10 XP！");
-}
+    const bonus = {
+      normal: 5,
+      important: 15,
+      top: 30
+    };
+
+    const earnedXP = 10 + (bonus[task.priority] ?? 5);
+
+    experience += earnedXP;
+    xpHistory.push(historyKey);
+    showXpEffect(`＋${earnedXP} XP！`);
+  }
 
   task.done = check.checked;
   save();
