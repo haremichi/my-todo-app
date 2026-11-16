@@ -189,8 +189,8 @@ placeholder="新しいタスクを入力..." required>
 
 </main>
 <script>
-let tasks = JSON.parse(
-  localStorage.getItem("myTodoTasks") || "[]"
+let longTermTasks = JSON.parse(
+  localStorage.getItem("myLongTermTasks") || "[]"
 );
 tasks.forEach(task => {
   if (typeof task.xpClaimed !== "boolean") {
