@@ -179,6 +179,14 @@ placeholder="新しいタスクを入力..." required>
 
 <h2>いつかやるっきゃない！</h2>
 
+<form id="longTermForm">
+  <input id="longTermInput" type="text"
+  placeholder="いつか叶えたい目標..." required>
+  <button type="submit">追加</button>
+</form>
+
+<ul id="longTermList"></ul>
+
 </main>
 <script>
 let tasks = JSON.parse(
