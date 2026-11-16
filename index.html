@@ -278,7 +278,14 @@ function render() {
   save();
 });
     const name = document.createElement("span");
-    name.textContent = task.text;
+
+const priorityNames = {
+  normal: "普通",
+  important: "重要",
+  top: "最重要"
+};
+
+name.textContent = `${priorityNames[task.priority] || "普通"}｜${task.text}`;
 
     const edit = document.createElement("button");
     edit.textContent = "編集";
