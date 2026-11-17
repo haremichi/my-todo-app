@@ -242,6 +242,9 @@ let xpHistory = JSON.parse(
   localStorage.getItem("myTodoXPHistory") || "[]"
 );
 
+// 全タスク達成ボーナスの履歴
+const dailyClearBonus = 20;
+
 const form = document.getElementById("form");
 const input = document.getElementById("taskInput");
 const priorityInput = document.getElementById("taskPriority");
@@ -352,6 +355,20 @@ function render() {
   }
 
   task.done = check.checked;
+
+  // 全タスク達成ボーナス
+  const clearKey = `clear_${today}`;
+
+  if (
+    tasks.length > 0 &&
+    tasks.every(t => t.done) &&
+    !xpHistory.includes(clearKey)
+  ) {
+    experience += dailyClearBonus;
+    xpHistory.push(clearKey);
+    showXpEffect("ALL CLEAR！＋20 XP！");
+  }
+
   save();
 });
     const name = document.createElement("span");
