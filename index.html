@@ -103,10 +103,31 @@ li button {
 li button.delete {
   color: #9b4545;
 }
-.empty {
-  text-align: center;
-  color: #999;
-  padding: 40px 0;
+/* 今日の達成度 */
+.progress-area {
+  margin: 15px 0 25px;
+}
+
+.progress-text {
+  font-size: 13px;
+  color: #777;
+  margin-bottom: 8px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 10px;
+  background: #ddd;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  width: 0%;
+  height: 100%;
+  background: #55a879;
+  border-radius: 10px;
+  transition: width 0.4s ease;
 }
 
 /* 経験値獲得エフェクト */
@@ -162,6 +183,15 @@ li button.delete {
 
 <h2>今日のきゃない！</h2>
 <div class="count" id="count">0 TASKS</div>
+
+<div class="progress-area">
+  <div class="progress-text" id="progressText">
+    0 / 0 TASKS COMPLETE　0%
+  </div>
+  <div class="progress-bar">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+</div>
 <form id="form">
 <input id="taskInput" type="text"
 placeholder="新しいタスクを入力..." required>
@@ -221,6 +251,8 @@ const longTermForm = document.getElementById("longTermForm");
 const longTermInput = document.getElementById("longTermInput");
 const longTermList = document.getElementById("longTermList");
 const count = document.getElementById("count");
+const progressText = document.getElementById("progressText");
+const progressFill = document.getElementById("progressFill");
 const xpDisplay = document.getElementById("xp");
 const xpEffect = document.getElementById("xpEffect");
 const loginBonus = document.getElementById("loginBonus");
@@ -264,10 +296,27 @@ function save() {
   render();
 }
 
+// 今日の達成度を更新
+function updateProgress() {
+  const total = tasks.length;
+  const completed = tasks.filter(task => task.done).length;
+
+  const percent = total === 0
+    ? 0
+    : Math.round((completed / total) * 100);
+
+  progressText.textContent =
+    `${completed} / ${total} TASKS COMPLETE　${percent}%`;
+
+  progressFill.style.width = `${percent}%`;
+}
+
 function render() {
   list.innerHTML = "";
   const remaining = tasks.filter(t => !t.done).length;
   count.textContent = `${remaining} / ${tasks.length} TASKS REMAINING`;
+
+  updateProgress();
 
   xpDisplay.textContent = `${experience} XP`;
 
