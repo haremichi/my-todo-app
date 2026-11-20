@@ -2408,7 +2408,23 @@ window.catsMusicEngine={
 <script id="catsSevenApprovedTracks">
 (function(){
 const factories=[
-()=>{const controls={};
+()=>{
+// スマホ向け：先の約2秒分だけ音を予約し、残りは小分けに処理する。
+let mobileBarTimer=null;
+function mobileSchedule(items, getTime, emit){
+ if(mobileBarTimer!==null){clearInterval(mobileBarTimer);mobileBarTimer=null}
+ let next=0;
+ const pump=()=>{
+  if(!ctx){clearInterval(mobileBarTimer);mobileBarTimer=null;return}
+  const until=ctx.currentTime+2.2;
+  while(next<items.length && getTime(next)<until){emit(items[next],next);next++}
+  if(next>=items.length){clearInterval(mobileBarTimer);mobileBarTimer=null}
+ };
+ pump();
+ if(next<items.length)mobileBarTimer=setInterval(pump,180);
+}
+function mobileCancel(){if(mobileBarTimer!==null){clearInterval(mobileBarTimer);mobileBarTimer=null}}
+const controls={};
 const document={
  querySelector(sel){return controls[sel]||(controls[sel]={textContent:"",onclick:null,style:{}})},
  getElementById(id){return this.querySelector("#"+id)}
@@ -2440,7 +2456,7 @@ function snare(t,ghost=false){noise(t,.115,ghost?.025:.095,1300);tone(50,t,.08,'
 function hat(t,accent=false){noise(t,.055,accent?.047:.028,6500)}
 function schedule(){
 const base=ctx.currentTime+.16;started=performance.now();stopAt=totalBars*4*beat*1000;playing=true;
-for(let bar=0;bar<totalBars;bar++){
+mobileSchedule(Array.from({length:totalBars},(_,i)=>i), i=>base+i*4*beat, (bar)=>{
  const section=bar<4?'intro':bar<12?'verse':bar<20?'chorus':bar<24?'bridge':'final';
  const c=bar%4,root=roots[c],ch=chords[c],at=base+bar*16*step;
  const ts=q=>at+q*step;
@@ -2470,17 +2486,33 @@ for(let bar=0;bar<totalBars;bar++){
  // Overdriven-organ-style chord punches.
  if(section==='chorus'||section==='final')for(let q of [2,10])tone(root+12,ts(q),2.5*step,'square',.025,.02);
  if(section==='intro'||section==='bridge')tone(root+12,ts(0),8*step,'square',.022,.03);
-}
+});
 document.getElementById('status').textContent='再生中 ♪ オリジナルの明るいバンドサウンド';
 timer=setInterval(()=>{let pct=Math.min(100,(performance.now()-started)/stopAt*100);document.getElementById('fill').style.width=pct+'%';if(pct>=100)stop()},100);
 }
 async function play(){stop();ctx=new (window.AudioContext||window.webkitAudioContext)();await ctx.resume();schedule()}
-function stop(){if(timer)clearInterval(timer);timer=null;playing=false;if(ctx){ctx.close().catch(()=>{});ctx=null}document.getElementById('fill').style.width='0%';document.getElementById('status').textContent='停止中';}
+function stop(){mobileCancel();if(timer)clearInterval(timer);timer=null;playing=false;if(ctx){ctx.close().catch(()=>{});ctx=null}document.getElementById('fill').style.width='0%';document.getElementById('status').textContent='停止中';}
 document.getElementById('play').onclick=play;document.getElementById('stop').onclick=stop;
 
 return {play:()=>controls["#play"].onclick(),stop:()=>controls["#stop"].onclick()};
 },
-()=>{const controls={};
+()=>{
+// スマホ向け：先の約2秒分だけ音を予約し、残りは小分けに処理する。
+let mobileBarTimer=null;
+function mobileSchedule(items, getTime, emit){
+ if(mobileBarTimer!==null){clearInterval(mobileBarTimer);mobileBarTimer=null}
+ let next=0;
+ const pump=()=>{
+  if(!ctx){clearInterval(mobileBarTimer);mobileBarTimer=null;return}
+  const until=ctx.currentTime+2.2;
+  while(next<items.length && getTime(next)<until){emit(items[next],next);next++}
+  if(next>=items.length){clearInterval(mobileBarTimer);mobileBarTimer=null}
+ };
+ pump();
+ if(next<items.length)mobileBarTimer=setInterval(pump,180);
+}
+function mobileCancel(){if(mobileBarTimer!==null){clearInterval(mobileBarTimer);mobileBarTimer=null}}
+const controls={};
 const document={
  querySelector(sel){return controls[sel]||(controls[sel]={textContent:"",onclick:null,style:{}})},
  getElementById(id){return this.querySelector("#"+id)}
@@ -2512,7 +2544,7 @@ function snare(t,ghost=false){noise(t,.115,ghost?.025:.095,1300);tone(50,t,.08,'
 function hat(t,accent=false){noise(t,.055,accent?.047:.028,6500)}
 function schedule(){
 const base=ctx.currentTime+.16;started=performance.now();stopAt=totalBars*4*beat*1000;playing=true;
-for(let bar=0;bar<totalBars;bar++){
+mobileSchedule(Array.from({length:totalBars},(_,i)=>i), i=>base+i*4*beat, (bar)=>{
  const section=bar<4?'intro':bar<12?'verse':bar<20?'chorus':bar<24?'bridge':'final';
  const c=bar%4,root=roots[c],ch=chords[c],at=base+bar*16*step;
  const ts=q=>at+q*step;
@@ -2531,17 +2563,33 @@ for(let bar=0;bar<totalBars;bar++){
  // The final phrase blooms into warm sustained harmony.
  if(bar>=8)for(const n of ch.slice(1,4))tone(n+12,ts(0),13*step,'sine',bar>=12?.019:.012);
 
-}
+});
 document.getElementById('status').textContent='再生中 ♪ 星の手紙';
 timer=setInterval(()=>{let pct=Math.min(100,(performance.now()-started)/stopAt*100);document.getElementById('fill').style.width=pct+'%';if(pct>=100)stop()},100);
 }
 async function play(){stop();ctx=new (window.AudioContext||window.webkitAudioContext)();await ctx.resume();schedule()}
-function stop(){if(timer)clearInterval(timer);timer=null;playing=false;if(ctx){ctx.close().catch(()=>{});ctx=null}document.getElementById('fill').style.width='0%';document.getElementById('status').textContent='停止中';}
+function stop(){mobileCancel();if(timer)clearInterval(timer);timer=null;playing=false;if(ctx){ctx.close().catch(()=>{});ctx=null}document.getElementById('fill').style.width='0%';document.getElementById('status').textContent='停止中';}
 document.getElementById('play').onclick=play;document.getElementById('stop').onclick=stop;
 
 return {play:()=>controls["#play"].onclick(),stop:()=>controls["#stop"].onclick()};
 },
-()=>{const controls={};
+()=>{
+// スマホ向け：先の約2秒分だけ音を予約し、残りは小分けに処理する。
+let mobileBarTimer=null;
+function mobileSchedule(items, getTime, emit){
+ if(mobileBarTimer!==null){clearInterval(mobileBarTimer);mobileBarTimer=null}
+ let next=0;
+ const pump=()=>{
+  if(!ctx){clearInterval(mobileBarTimer);mobileBarTimer=null;return}
+  const until=ctx.currentTime+2.2;
+  while(next<items.length && getTime(next)<until){emit(items[next],next);next++}
+  if(next>=items.length){clearInterval(mobileBarTimer);mobileBarTimer=null}
+ };
+ pump();
+ if(next<items.length)mobileBarTimer=setInterval(pump,180);
+}
+function mobileCancel(){if(mobileBarTimer!==null){clearInterval(mobileBarTimer);mobileBarTimer=null}}
+const controls={};
 const document={
  querySelector(sel){return controls[sel]||(controls[sel]={textContent:"",onclick:null,style:{}})},
  getElementById(id){return this.querySelector("#"+id)}
@@ -2573,7 +2621,7 @@ function noise(t,d,v,hp=1200){const count=Math.max(1,Math.floor(ctx.sampleRate*d
 function kick(t){let o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';o.frequency.setValueAtTime(130,t);o.frequency.exponentialRampToValueAtTime(43,t+.14);o.connect(g);g.connect(ctx.destination);gainEnv(g,t,.18,.33,.002);o.start(t);o.stop(t+.2)}
 function snare(t,ghost=false){noise(t,.1,ghost?.023:.095,1200);tone(52,t,.075,'triangle',ghost?.009:.03)}
 function hat(t,open=false){noise(t,open?.16:.043,open?.047:.029,6900)}
-function schedule(){let start=ctx.currentTime+.17;started=performance.now();for(let bar=0;bar<bars;bar++){
+function schedule(){let start=ctx.currentTime+.17;started=performance.now();mobileSchedule(Array.from({length:bars},(_,i)=>i), i=>start+i*4*beat, (bar)=>{
 let part=bar<4?'intro':bar<12?'verse':bar<20?'chorus':'outro',ix=bar%4,root=roots[ix],ch=chords[ix],at=start+bar*16*step,ts=q=>at+q*step;
 for(let [q,n,len] of basslines[ix])bass(root+n,ts(q),len*step*.83);
 let kicks=part==='chorus'?[0,6,10,14]:bar%2?[0,7,11]:[0,6,12];for(let q of kicks)kick(ts(q));
@@ -2587,15 +2635,31 @@ for(let q of (part==='intro'?[0,8]:[0,9]))for(let n of ch.slice(1))ep(n+12,ts(q)
 if(part!=='intro')for(let [q,n,len] of hooks[ix])ep(n,ts(q),len*step*.9);
 if(part==='chorus')for(let q of [6,14])tone(ch[3]+24,ts(q),1.5*step,'sine',.042);
 if(part==='outro')for(let n of ch.slice(1))tone(n+12,ts(0),12*step,'sine',.022);
-}
+});
 document.getElementById('status').textContent='再生中 ♪';timer=setInterval(()=>{let pct=Math.min(100,(performance.now()-started)/(bars*4*beat*1000)*100);document.getElementById('fill').style.width=pct+'%';if(pct>=100)stop()},100)}
 async function play(){stop();ctx=new(window.AudioContext||window.webkitAudioContext)();await ctx.resume();schedule()}
-function stop(){if(timer)clearInterval(timer);timer=null;if(ctx){ctx.close().catch(()=>{});ctx=null}document.getElementById('fill').style.width='0%';document.getElementById('status').textContent='停止中'}
+function stop(){mobileCancel();if(timer)clearInterval(timer);timer=null;if(ctx){ctx.close().catch(()=>{});ctx=null}document.getElementById('fill').style.width='0%';document.getElementById('status').textContent='停止中'}
 document.getElementById('play').onclick=play;document.getElementById('stop').onclick=stop;
 
 return {play:()=>controls["#play"].onclick(),stop:()=>controls["#stop"].onclick()};
 },
-()=>{const controls={};
+()=>{
+// スマホ向け：先の約2秒分だけ音を予約し、残りは小分けに処理する。
+let mobileBarTimer=null;
+function mobileSchedule(items, getTime, emit){
+ if(mobileBarTimer!==null){clearInterval(mobileBarTimer);mobileBarTimer=null}
+ let next=0;
+ const pump=()=>{
+  if(!ctx){clearInterval(mobileBarTimer);mobileBarTimer=null;return}
+  const until=ctx.currentTime+2.2;
+  while(next<items.length && getTime(next)<until){emit(items[next],next);next++}
+  if(next>=items.length){clearInterval(mobileBarTimer);mobileBarTimer=null}
+ };
+ pump();
+ if(next<items.length)mobileBarTimer=setInterval(pump,180);
+}
+function mobileCancel(){if(mobileBarTimer!==null){clearInterval(mobileBarTimer);mobileBarTimer=null}}
+const controls={};
 const document={
  querySelector(sel){return controls[sel]||(controls[sel]={textContent:"",onclick:null,style:{}})},
  getElementById(id){return this.querySelector("#"+id)}
@@ -2627,7 +2691,7 @@ function noise(t,d,v,hp=1200){const count=Math.max(1,Math.floor(ctx.sampleRate*d
 function kick(t){let o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';o.frequency.setValueAtTime(130,t);o.frequency.exponentialRampToValueAtTime(43,t+.14);o.connect(g);g.connect(ctx.destination);gainEnv(g,t,.18,.33,.002);o.start(t);o.stop(t+.2)}
 function snare(t,ghost=false){noise(t,.1,ghost?.023:.095,1200);tone(52,t,.075,'triangle',ghost?.009:.03)}
 function hat(t,open=false){noise(t,open?.16:.043,open?.047:.029,6900)}
-function schedule(){let start=ctx.currentTime+.17;started=performance.now();for(let bar=0;bar<bars;bar++){
+function schedule(){let start=ctx.currentTime+.17;started=performance.now();mobileSchedule(Array.from({length:bars},(_,i)=>i), i=>start+i*4*beat, (bar)=>{
 let part=bar<4?'intro':bar<12?'verse':bar<20?'chorus':'outro',ix=bar%4,root=roots[ix],ch=chords[ix],at=start+bar*16*step,ts=q=>at+q*step;
 for(let [q,n,len] of basslines[ix])bass(root+n,ts(q),len*step*.83);
 let kicks=part==='chorus'?[0,7,10,14]:bar%2?[0,9,14]:[0,6,11];for(let q of kicks)kick(ts(q));
@@ -2641,15 +2705,31 @@ for(let q of (part==='intro'?[0]:[0,10]))for(let n of ch.slice(1))ep(n+12,ts(q),
 if(part!=='intro')for(let [q,n,len] of hooks[ix])ep(n,ts(q),len*step*.9);
 if(part==='chorus')for(let q of [3,11])tone(ch[3]+12,ts(q),3*step,'triangle',.026);
 if(part==='outro')for(let n of ch.slice(1))tone(n+12,ts(0),12*step,'sine',.022);
-}
+});
 document.getElementById('status').textContent='再生中 ♪';timer=setInterval(()=>{let pct=Math.min(100,(performance.now()-started)/(bars*4*beat*1000)*100);document.getElementById('fill').style.width=pct+'%';if(pct>=100)stop()},100)}
 async function play(){stop();ctx=new(window.AudioContext||window.webkitAudioContext)();await ctx.resume();schedule()}
-function stop(){if(timer)clearInterval(timer);timer=null;if(ctx){ctx.close().catch(()=>{});ctx=null}document.getElementById('fill').style.width='0%';document.getElementById('status').textContent='停止中'}
+function stop(){mobileCancel();if(timer)clearInterval(timer);timer=null;if(ctx){ctx.close().catch(()=>{});ctx=null}document.getElementById('fill').style.width='0%';document.getElementById('status').textContent='停止中'}
 document.getElementById('play').onclick=play;document.getElementById('stop').onclick=stop;
 
 return {play:()=>controls["#play"].onclick(),stop:()=>controls["#stop"].onclick()};
 },
-()=>{const controls={};
+()=>{
+// スマホ向け：先の約2秒分だけ音を予約し、残りは小分けに処理する。
+let mobileBarTimer=null;
+function mobileSchedule(items, getTime, emit){
+ if(mobileBarTimer!==null){clearInterval(mobileBarTimer);mobileBarTimer=null}
+ let next=0;
+ const pump=()=>{
+  if(!ctx){clearInterval(mobileBarTimer);mobileBarTimer=null;return}
+  const until=ctx.currentTime+2.2;
+  while(next<items.length && getTime(next)<until){emit(items[next],next);next++}
+  if(next>=items.length){clearInterval(mobileBarTimer);mobileBarTimer=null}
+ };
+ pump();
+ if(next<items.length)mobileBarTimer=setInterval(pump,180);
+}
+function mobileCancel(){if(mobileBarTimer!==null){clearInterval(mobileBarTimer);mobileBarTimer=null}}
+const controls={};
 const document={
  querySelector(sel){return controls[sel]||(controls[sel]={textContent:"",onclick:null,style:{}})},
  getElementById(id){return this.querySelector("#"+id)}
@@ -2699,7 +2779,7 @@ const solo=[
 [[0,74,3],[4,72,2],[7,69,3],[11,67,2],[14,64,2]],
 [[0,67,4],[5,69,2],[8,70,3],[12,69,4]]
 ];
-function arrange(start){seq.forEach((bar,i)=>{let at=start+i*16*tick,ts=q=>at+q*tick,root=bar.root,dr=drums[bar.feel],section=i<4?'intro':i<12?'verse':i<20?'solo':'outro';
+function arrange(start){mobileSchedule(seq, i=>start+i*16*tick, (bar,i)=>{let at=start+i*16*tick,ts=q=>at+q*tick,root=bar.root,dr=drums[bar.feel],section=i<4?'intro':i<12?'verse':i<20?'solo':'outro';
 dr.kick.forEach(q=>kick(ts(q),section==='solo'?.24:.19));dr.sn.forEach(q=>snare(ts(q),q===15?.075:.105));dr.hat.forEach((q,j)=>hat(ts(q),j%3===0?.031:.018));
 lines[(i+bar.feel)%4].forEach(([q,interval,len])=>bass(root-12+interval,ts(q),len*tick*.82));
 let chops=bar.feel%2?[[3,2],[10,2],[14,2]]:[[2,2],[7,2],[13,3]];
@@ -2708,14 +2788,30 @@ if(i>=4){[0,8].forEach(q=>{organ(root+24,ts(q),6*tick);organ(root+27,ts(q),6*tic
 let phrase=solo[(i+(i>=12?3:0))%8];if(section==='intro')phrase=phrase.filter((_,j)=>j<2);if(section==='outro'&&i===23)phrase=[[0,64,4],[5,67,3],[9,69,6]];
 phrase.forEach(([q,n,len],j)=>{let shift=bar.kind==='A'?5:bar.kind==='B'?7:0;guitar(n+shift,ts(q),len*tick*.93,section==='solo'?.082:.061,j===1&&i%3===0)});
 if(section==='solo'&&i%2===0){guitar(root+31,ts(15),tick*.9,.047,true)}
-});}
-async function stop(){active=false;run++;if(ctx){let old=ctx;ctx=null;try{await old.close()}catch(e){}}document.querySelector('#status').textContent='停止しました'}
+});;}
+async function stop(){mobileCancel();active=false;run++;if(ctx){let old=ctx;ctx=null;try{await old.close()}catch(e){}}document.querySelector('#status').textContent='停止しました'}
 document.querySelector('#stop').onclick=stop;
 document.querySelector('#play').onclick=async()=>{await stop();let thisRun=++run;ctx=new (window.AudioContext||window.webkitAudioContext)();master=ctx.createGain();master.gain.value=.48;master.connect(ctx.destination);await ctx.resume();if(thisRun!==run)return;active=true;arrange(ctx.currentTime+.09);document.querySelector('#status').textContent='再生中 ♪ ギターとリズム隊の掛け合いを楽しんで！';};
 
 return {play:()=>controls["#play"].onclick(),stop:()=>controls["#stop"].onclick()};
 },
-()=>{const controls={};
+()=>{
+// スマホ向け：先の約2秒分だけ音を予約し、残りは小分けに処理する。
+let mobileBarTimer=null;
+function mobileSchedule(items, getTime, emit){
+ if(mobileBarTimer!==null){clearInterval(mobileBarTimer);mobileBarTimer=null}
+ let next=0;
+ const pump=()=>{
+  if(!ctx){clearInterval(mobileBarTimer);mobileBarTimer=null;return}
+  const until=ctx.currentTime+2.2;
+  while(next<items.length && getTime(next)<until){emit(items[next],next);next++}
+  if(next>=items.length){clearInterval(mobileBarTimer);mobileBarTimer=null}
+ };
+ pump();
+ if(next<items.length)mobileBarTimer=setInterval(pump,180);
+}
+function mobileCancel(){if(mobileBarTimer!==null){clearInterval(mobileBarTimer);mobileBarTimer=null}}
+const controls={};
 const document={
  querySelector(sel){return controls[sel]||(controls[sel]={textContent:"",onclick:null,style:{}})},
  getElementById(id){return this.querySelector("#"+id)}
@@ -2748,7 +2844,7 @@ const bassmotifs=[
 [[0,0,2],[3,5,1],[5,7,2]],
 [[0,0,2],[4,12,1],[6,10,1]]
 ];
-function arrange(t0){let cursor=t0;bars.forEach((b,i)=>{let t=q=>cursor+q*eighth;let loud=b.section==='chorus'||b.section==='final';let quiet=b.section==='bridge'||b.section==='intro';let max=b.beats;
+function arrange(t0){let cursor=t0;const offsets=[0];for(const b of bars)offsets.push(offsets[offsets.length-1]+b.beats*eighth);mobileSchedule(bars,i=>t0+offsets[i],(b,i)=>{let cursor=t0+offsets[i];let t=q=>cursor+q*eighth;let loud=b.section==='chorus'||b.section==='final';let quiet=b.section==='bridge'||b.section==='intro';let max=b.beats;
 let kicks=loud?[0,3,6]:quiet?[0,4]:i%2?[0,5]:[0,3];let snares=loud?[2,5]:quiet?[3]:[2,5];
 kicks.filter(q=>q<max).forEach(q=>kick(t(q)));snares.filter(q=>q<max).forEach(q=>snare(t(q)));
 for(let q=0;q<max;q++){if(loud||q%2===0)hat(t(q))}
@@ -2759,14 +2855,30 @@ let phrase=motifs[(i+Math.floor(i/4))%6];if(i<4)phrase=phrase.filter((_,j)=>j<2)
 phrase.filter(([q])=>q<max).forEach(([q,n,d],j)=>{guitar(b.root+24+n,t(q),Math.min(d,max-q)*eighth*.87,loud?.084:quiet?.042:.064,j===1&&i%5===0?1:0)});
 if(loud&&i%4===3)guitar(b.root+36,t(max-1),eighth*.8,.075,-1);
 cursor+=max*eighth;
-});return cursor-t0}
-async function stop(){run++;if(ctx){let old=ctx;ctx=null;try{await old.close()}catch(e){}}document.querySelector('#status').textContent='停止しました'}
+});return offsets[offsets.length-1]}
+async function stop(){mobileCancel();run++;if(ctx){let old=ctx;ctx=null;try{await old.close()}catch(e){}}document.querySelector('#status').textContent='停止しました'}
 document.querySelector('#stop').onclick=stop;
 document.querySelector('#play').onclick=async()=>{await stop();let r=++run;ctx=new (window.AudioContext||window.webkitAudioContext)();master=ctx.createGain();master.gain.value=.43;master.connect(ctx.destination);await ctx.resume();if(r!==run)return;let seconds=arrange(ctx.currentTime+.12);document.querySelector('#status').textContent='再生中 ♪ '+Math.round(seconds)+'秒。変拍子と静寂の対比に注目！'};
 
 return {play:()=>controls["#play"].onclick(),stop:()=>controls["#stop"].onclick()};
 },
-()=>{const controls={};
+()=>{
+// スマホ向け：先の約2秒分だけ音を予約し、残りは小分けに処理する。
+let mobileBarTimer=null;
+function mobileSchedule(items, getTime, emit){
+ if(mobileBarTimer!==null){clearInterval(mobileBarTimer);mobileBarTimer=null}
+ let next=0;
+ const pump=()=>{
+  if(!ctx){clearInterval(mobileBarTimer);mobileBarTimer=null;return}
+  const until=ctx.currentTime+2.2;
+  while(next<items.length && getTime(next)<until){emit(items[next],next);next++}
+  if(next>=items.length){clearInterval(mobileBarTimer);mobileBarTimer=null}
+ };
+ pump();
+ if(next<items.length)mobileBarTimer=setInterval(pump,180);
+}
+function mobileCancel(){if(mobileBarTimer!==null){clearInterval(mobileBarTimer);mobileBarTimer=null}}
+const controls={};
 const document={
  querySelector(sel){return controls[sel]||(controls[sel]={textContent:"",onclick:null,style:{}})},
  getElementById(id){return this.querySelector("#"+id)}
@@ -2809,7 +2921,7 @@ const chorus=[
 [[0,80,5],[6,78,3],[10,75,5]],
 [[0,73,3],[4,75,3],[8,78,7]]
 ];
-function arrange(start){structure.forEach((part,i)=>{let t=q=>start+(i*16+q)*step,ch=chords[i%8],loud=part==='chorus'||part==='final',bridge=part==='bridge';
+function arrange(start){mobileSchedule(structure, i=>start+i*16*step, (part,i)=>{let t=q=>start+(i*16+q)*step,ch=chords[i%8],loud=part==='chorus'||part==='final',bridge=part==='bridge';
 if(part!=='intro'){let kicks=loud?[0,6,8,14]:bridge?[0,8]:i%2?[0,7,10]:[0,8,12];kicks.forEach(q=>kick(t(q)));[4,12].forEach(q=>snare(t(q)));for(let q=0;q<16;q+=loud?2:4)hat(t(q))}
 if(part!=='intro'){let pattern=loud?[[0,0,3],[4,7,2],[7,12,2],[10,7,2],[13,0,3]]:bridge?[[0,0,8],[8,7,8]]:[[0,0,4],[5,7,3],[9,12,3],[13,7,3]];pattern.forEach(([q,n,d])=>bass(ch.r-12+n,t(q),d*step*.85))}
 if(part==='intro'){for(let q of [0,4,8,12])tone(ch.c[(q/4)%4],t(q),3.3*step,'triangle',.045)}
@@ -2818,8 +2930,8 @@ else {let rhythm=loud?[[0,5],[6,2],[8,4],[13,3]]:part==='pre'?[[0,3],[4,3],[8,3]
 if(i>=2){let phrase=loud?chorus[(i-(part==='final'?20:8))%8]:verse[i%4];if(bridge)phrase=[[0,71,5],[6,73,4],[11,75,5]];if(part==='outro')phrase=[[0,78,5],[6,75,3],[10,71,6]];phrase.forEach(([q,n,d])=>{tone(n,t(q),d*step*.9,'triangle',loud?.09:.062);tone(n+12,t(q),Math.min(d*step*.5,2*step),'sine',.012)})}
 if(loud){for(let q of [0,8])for(let n of ch.c.slice(1,3))tone(n+12,t(q),6*step,'sine',.018)}
 if(part==='final'&&i>=24)tone(83,t(0),12*step,'sine',.022);
-});}
-async function stop(){serial++;if(ctx){let old=ctx;ctx=null;try{await old.close()}catch(e){}}document.querySelector('#status').textContent='停止しました'}
+});;}
+async function stop(){mobileCancel();serial++;if(ctx){let old=ctx;ctx=null;try{await old.close()}catch(e){}}document.querySelector('#status').textContent='停止しました'}
 document.querySelector('#stop').onclick=stop;
 document.querySelector('#play').onclick=async()=>{await stop();let id=++serial;ctx=new (window.AudioContext||window.webkitAudioContext)();master=ctx.createGain();master.gain.value=.42;master.connect(ctx.destination);await ctx.resume();if(id!==serial)return;arrange(ctx.currentTime+.1);document.querySelector('#status').textContent='再生中 ♪ サビで一気に駆け出す！'};
 
