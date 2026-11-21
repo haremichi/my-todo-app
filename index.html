@@ -450,6 +450,28 @@ body:has(#koalaShopScreen:not([hidden])) main { max-width: 960px; }
 @media(max-width:540px){
   #stoneMusicScreen .cats-scene {grid-template-columns:1fr}
 }
+
+/* スマホ縦画面優先：横長PCでもゲーム画面を拡大しすぎない */
+#anomalScreen{display:flex;flex-direction:column;align-items:center;overflow-y:auto;overflow-x:hidden;padding:0!important;background:#142720}
+#anomalScreen[hidden]{display:none}
+#anomalScreen .anomal-world,#anomalScreen .anomal-tools,#anomalScreen #anomalTest{width:100%;max-width:460px;box-sizing:border-box;flex-shrink:0}
+#anomalScreen .anomal-world{height:min(76dvh,720px);min-height:420px;position:relative;overflow:hidden}
+#anomalScreen .anomal-land{width:100%;height:100%;object-fit:cover}
+#anomalScreen .anomal-top{position:absolute;z-index:4;top:0;left:0;right:0;min-height:50px;padding:8px 12px;gap:6px}
+#anomalScreen .anomal-top strong{font-size:14px;white-space:nowrap}
+#anomalScreen .anomal-world #anomalList{position:absolute;z-index:2;left:0;right:0;top:18%;bottom:18%;display:flex;align-items:center;justify-content:center;min-height:0;padding:8px;gap:8px}
+#anomalScreen .anomal-being{width:min(64vw,240px);max-width:240px;min-width:140px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+#anomalScreen .anomal-being svg{height:clamp(140px,28dvh,235px);width:100%;max-width:235px}
+#anomalScreen .anomal-being small{font-size:12px;line-height:1.45;max-width:240px}
+#anomalScreen .anomal-world #anomalEchoList{position:absolute;z-index:3;left:0;right:0;bottom:5px;min-height:64px;max-height:18%;overflow-y:auto;align-items:end;padding:5px}
+#anomalScreen .anomal-world .echo-crystal{width:64px;flex-shrink:0}
+#anomalScreen .anomal-tools{padding:10px 12px}
+#anomalScreen #anomalTest{padding:8px 12px 20px;display:flex;gap:6px;flex-wrap:wrap}
+#anomalScreen #anomalTest[hidden]{display:none}
+#anomalScreen #anomalTest button{font-size:12px}
+@media(min-width:600px){#anomalScreen .anomal-world{height:min(76dvh,720px);box-shadow:0 0 0 1px #456456}#anomalScreen .anomal-tools,#anomalScreen #anomalTest{box-shadow:0 0 0 1px #456456}}
+@media(max-width:390px){#anomalScreen .anomal-world{height:72dvh;min-height:380px}#anomalScreen .anomal-being svg{height:145px}#anomalScreen .anomal-top strong{font-size:12px}}
+
 </style>
 
 <style id="catsComposerIntegrationStyle">
@@ -460,7 +482,190 @@ body:has(#koalaShopScreen:not([hidden])) main { max-width: 960px; }
 #catsComposerFrame{display:block;width:100%;height:760px;border:0;border-radius:9px;background:#101722}
 @media(max-width:500px){#catsComposerFrame{height:950px}}
 </style>
-</head>
+<style>
+.echo-crystal{display:flex;width:100%;align-items:center;gap:14px;text-align:left;border:1px solid #777;cursor:pointer;margin:8px 0;background:transparent}
+.echo-art{width:76px;height:76px;flex:none;overflow:visible; color:var(--echo-color)}
+.echo-art .core{opacity:.15;transition:opacity .24s ease-out;filter:drop-shadow(0 0 2px currentColor)}
+.echo-art .halo{opacity:0;transition:opacity .3s ease-out}
+.echo-glow .echo-art .core{opacity:.45;filter:drop-shadow(0 0 5px currentColor)}
+.echo-beat .echo-art .core{opacity:1;transition:opacity .035s;filter:drop-shadow(0 0 9px currentColor)}
+.echo-beat .echo-art .halo{opacity:.7;transition:opacity .035s}
+@media(prefers-reduced-motion:reduce){.echo-art .core,.echo-art .halo{transition:none}}
+</style><style>
+#anomalScreen{position:fixed;inset:0;z-index:100;background:#182c28;color:#f4f0dc;margin:0;padding:0;border:0;border-radius:0;overflow:auto;max-width:none}#anomalScreen[hidden]{display:none} .anomal-world{position:relative;min-height:78dvh;overflow:hidden;isolation:isolate;background:#536e56}.anomal-land{position:absolute;width:100%;height:100%;inset:0;z-index:-1}.anomal-night .anomal-land{filter:brightness(.48) hue-rotate(20deg)}.anomal-top{display:flex;align-items:center;justify-content:space-between;padding:12px;background:#152d29aa}.anomal-top button,.anomal-tools button{background:#263e35;color:#fff;border:1px solid #7b9380;border-radius:8px;padding:9px}.anomal-world #anomalList{position:relative;display:flex;flex-wrap:wrap;justify-content:center;align-items:end;gap:12px;padding:12px;min-height:44dvh;padding-top:22dvh}.anomal-being{width:clamp(120px,37vw,200px);border:0;background:none;color:white;text-shadow:0 1px 4px #14261a;text-align:center;cursor:pointer}.anomal-being svg{width:100%;height:120px;overflow:visible;filter:drop-shadow(0 7px 4px #172c2677)}.anomal-being small{display:block;background:#18352cb0;border-radius:8px;padding:5px}.anomal-being progress{height:5px;opacity:.8}.anomal-world #anomalEchoList{display:flex;gap:4px;flex-wrap:wrap;justify-content:center;padding:8px}.anomal-world .echo-crystal{width:78px;display:flex;flex-direction:column;align-items:center;background:transparent;border:none;color:#fff;padding:0;text-shadow:0 1px 4px #15251c}.anomal-world .echo-crystal span{font-size:10px}.anomal-tools{padding:12px;background:#20392f}.anomal-tools p{margin:5px 0;font-size:12px}.anomal-core{animation:anomalPulse 3s infinite alternate}@keyframes anomalPulse{from{opacity:.25}to{opacity:.9}}.anomal-being:active svg{transform:translateY(-4px)}
+
+/* 育成中のアノマルが主役。心の残響は脇の小さな飾り棚に配置 */
+#anomalScreen .anomal-world #anomalList{top:15%;bottom:23%;z-index:2}
+#anomalScreen .anomal-echo-shelf{position:absolute;z-index:3;right:9px;bottom:12px;width:clamp(105px,32%,148px);max-height:24%;background:rgba(21,43,35,.83);border:1px solid #a6a58188;border-radius:12px;padding:7px 5px 5px;box-shadow:0 4px 14px #14291e66;overflow:hidden}
+#anomalScreen .anomal-shelf-title{font-size:11px;color:#e4dfb7;text-align:center;letter-spacing:.06em;margin-bottom:3px}
+#anomalScreen .anomal-world #anomalEchoList{position:relative;inset:auto;display:flex;justify-content:center;align-items:flex-start;gap:4px;min-height:35px;max-height:105px;overflow-y:auto;padding:0 2px}
+#anomalScreen .anomal-world .echo-crystal{width:48px;min-width:42px;flex-shrink:0}
+#anomalScreen .anomal-world .echo-crystal .echo-art{width:40px;height:40px}
+#anomalScreen .anomal-world .echo-crystal span{font-size:9px;line-height:1.25;max-height:26px;overflow:hidden}
+#anomalScreen .anomal-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#fff7dc;text-shadow:0 2px 5px #182b25;text-align:center;background:rgba(18,46,34,.34);padding:20px 14px;border-radius:14px;max-width:85%}
+#anomalScreen .anomal-empty-icon{font-size:48px;opacity:.8}
+#anomalScreen .anomal-empty strong{font-size:15px}
+#anomalScreen .anomal-empty span{font-size:11px;line-height:1.5}
+@media(max-width:390px){#anomalScreen .anomal-echo-shelf{width:112px;right:6px;bottom:8px}#anomalScreen .anomal-world #anomalList{bottom:25%}}
+</style>
+<style id="officialAnomalGardenStyle">
+/* 正式採用の3枚を使用。既存のSVG洞窟は非表示 */
+#anomalScreen{background:#182c28}
+#anomalScreen .anomal-world{
+ width:min(100%,640px);height:auto!important;min-height:0!important;
+ aspect-ratio:1/1;margin:0 auto;overflow:hidden;
+ background-image:url('assets/garden_empty.png');
+ background-position:center;background-size:cover;background-repeat:no-repeat;
+ box-shadow:none!important;
+}
+#anomalScreen .anomal-land{display:none!important}
+#anomalScreen .anomal-world.anomal-has-egg{background-image:url('assets/garden_egg.png')}
+#anomalScreen .anomal-world.anomal-glowing{background-image:url('assets/garden_glow.png')}
+#anomalScreen .anomal-night{filter:none!important}
+#anomalScreen .anomal-top{
+ position:absolute;inset:0 0 auto;z-index:5;min-height:52px;
+ background:linear-gradient(#122b30cc,#122b3000);padding:9px 12px;
+}
+#anomalScreen .anomal-top strong{font-size:15px;color:white;text-shadow:0 2px 5px #172525}
+#anomalScreen .anomal-world #anomalList{
+ position:absolute!important;inset:0!important;top:0!important;bottom:0!important;
+ display:flex;align-items:center;justify-content:center;min-height:0!important;
+ padding:0!important;gap:0;pointer-events:none;
+}
+#anomalScreen .anomal-being{
+ position:absolute;left:50%;top:54%;transform:translate(-50%,-50%);
+ width:min(49%,260px);display:flex;flex-direction:column;align-items:center;
+ background:none;border:0;pointer-events:auto;cursor:pointer;
+}
+#anomalScreen .anomal-being .anomal-gif{width:100%;height:auto;max-height:245px;object-fit:contain;
+ filter:drop-shadow(0 7px 5px #253b3b66);image-rendering:auto}
+#anomalScreen .anomal-being svg{display:none!important}
+#anomalScreen .anomal-being small,#anomalScreen .anomal-being progress{display:none!important}
+#anomalScreen .anomal-world #anomalList .anomal-empty{position:absolute;bottom:7%;left:50%;
+ transform:translateX(-50%);width:75%;padding:8px 10px;font-size:12px;pointer-events:none}
+#anomalScreen .anomal-empty-icon{display:none}
+#anomalScreen .anomal-echo-shelf{display:block!important}
+#anomalScreen .anomal-tools{max-width:640px;margin:0 auto;background:#20392f;padding:12px 16px}
+#anomalScreen #anomalTest{max-width:640px;margin:0 auto}
+#anomalScreen .garden-status{max-width:640px;margin:0 auto;padding:12px 16px;
+ background:#253e34;color:#f8f1d8;font-size:13px;line-height:1.6;text-align:center}
+#anomalScreen .garden-status progress{display:block;width:min(100%,340px);height:9px;margin:7px auto}
+#anomalScreen .garden-echo-panel{max-width:640px;margin:0 auto;padding:12px;
+ background:#172e2a;border-top:1px solid #748f7a}
+#anomalScreen .garden-echo-panel .anomal-shelf-title{text-align:left;font-size:14px;margin-bottom:6px}
+#anomalScreen .garden-echo-panel #anomalEchoList{display:flex;gap:10px;flex-wrap:wrap}
+#anomalScreen .garden-echo-panel .echo-crystal{width:95px;background:#203b34;border:1px solid #5c806f;
+ border-radius:8px;padding:8px;color:white}
+#anomalScreen .garden-echo-panel .echo-crystal .echo-art{width:52px;height:52px}
+#anomalScreen .garden-echo-panel .echo-crystal span{font-size:10px}
+@media(max-width:450px){
+ #anomalScreen .anomal-top strong{font-size:13px}
+ #anomalScreen .anomal-being{width:53%}
+}
+</style>
+<style id="officialEggGifFix">
+#anomalScreen .anomal-world{background-image:url('assets/garden_empty.png')!important}
+#anomalScreen .anomal-world .anomal-being{top:58%;width:min(48%,260px)}
+#anomalScreen .anomal-world .anomal-being .anomal-egg-gif{
+ width:100%;max-height:270px;object-fit:contain;
+ filter:drop-shadow(0 5px 4px #30432b55);
+}
+#anomalScreen .anomal-world .anomal-being svg{display:none!important}
+</style><style id="attributeEggVisual">
+#anomalScreen .anomal-world{background-image:url('assets/garden_empty.png')!important}
+#anomalScreen .anomal-world .anomal-being{top:58%;width:min(48%,260px)}
+#anomalScreen .anomal-world .anomal-being svg{display:none!important}
+#anomalScreen .anomal-egg-gif{max-height:270px;object-fit:contain}
+</style><style id="eggFiveStages">
+#anomalScreen .anomal-egg-gif{transition:filter .6s ease,opacity .6s ease;animation:eggPulse 3.8s ease-in-out infinite}
+#anomalScreen .egg-phase-0{filter:brightness(.48) saturate(.6) drop-shadow(0 0 3px #d3c7ff)!important;animation-duration:5.5s}
+#anomalScreen .egg-phase-1{filter:brightness(.95) drop-shadow(0 0 14px #e8dbff)!important;animation-duration:3.5s}
+#anomalScreen .egg-phase-2{filter:brightness(1.18) drop-shadow(0 0 18px #e8e0ff)!important;animation-duration:2.4s}
+#anomalScreen .egg-phase-3{filter:brightness(1.9) saturate(.7) drop-shadow(0 0 34px #fff)!important;animation-duration:1.1s}
+@keyframes eggPulse{0%,100%{opacity:.84;transform:scale(.985)}50%{opacity:1;transform:scale(1.015)}}
+@media(prefers-reduced-motion:reduce){#anomalScreen .anomal-egg-gif{animation:none!important}}
+</style><style id="echoShelfRestoration">
+#anomalScreen .garden-echo-panel{
+ display:block!important;position:relative!important;inset:auto!important;
+ width:min(100%,640px)!important;max-height:none!important;
+ margin:0 auto!important;padding:12px 16px!important;
+ background:#172e2a!important;border-radius:0!important;
+ border:0!important;border-top:1px solid #748f7a!important;
+ overflow:visible!important;
+}
+#anomalScreen .garden-echo-panel #anomalEchoList{
+ display:flex!important;position:relative!important;inset:auto!important;
+ flex-wrap:wrap!important;gap:10px!important;max-height:none!important;
+ min-height:30px!important;overflow:visible!important;
+}
+#anomalScreen .garden-echo-panel .echo-crystal{
+ width:95px!important;min-width:80px!important;
+}
+</style>
+<style id="echoWoodShelfFinal">
+/* 心の残響：横幅を確保した飾り棚。既存のクリック再生はそのまま。 */
+#anomalScreen .garden-echo-panel{
+ box-sizing:border-box!important;width:min(100%,640px)!important;max-width:640px!important;
+ margin:12px auto 18px!important;padding:16px 15px 20px!important;
+ position:relative!important;inset:auto!important;
+ border:4px solid #8b5936!important;border-radius:10px!important;
+ background:linear-gradient(90deg,#3c261d,#5a3929 12%,#493022 85%,#39251b)!important;
+ box-shadow:inset 0 0 0 2px #b5824f,0 8px 0 #2c1c16,0 14px 20px #081a1699!important;
+ overflow:visible!important;
+}
+#anomalScreen .garden-echo-panel .anomal-shelf-title{
+ color:#f9e7bb!important;font-size:16px!important;font-weight:700!important;
+ text-align:center!important;letter-spacing:.09em;margin:0 0 14px!important;
+ text-shadow:0 2px 1px #21130d!important;
+}
+#anomalScreen .garden-echo-panel #anomalEchoList{
+ display:grid!important;grid-template-columns:repeat(auto-fill,minmax(115px,1fr))!important;
+ gap:12px!important;align-items:stretch!important;justify-content:start!important;
+ padding:4px 3px 10px!important;margin:0!important;
+ max-height:none!important;overflow:visible!important;
+}
+#anomalScreen .garden-echo-panel .echo-crystal{
+ box-sizing:border-box!important;display:flex!important;flex-direction:column!important;
+ align-items:center!important;justify-content:flex-start!important;
+ width:100%!important;min-width:0!important;max-width:none!important;
+ margin:0!important;padding:10px 6px 9px!important;min-height:116px!important;
+ border:1px solid #bd986c!important;border-radius:7px!important;
+ background:linear-gradient(#29463c,#1a302b)!important;color:#f4e8cb!important;
+ box-shadow:0 5px 0 #21150f!important;
+}
+#anomalScreen .garden-echo-panel .echo-crystal .echo-art{
+ display:block!important;flex:0 0 auto!important;width:55px!important;height:55px!important;
+}
+#anomalScreen .garden-echo-panel .echo-crystal span{
+ display:block!important;box-sizing:border-box!important;width:100%!important;
+ font-size:11px!important;line-height:1.5!important;text-align:center!important;
+ max-height:none!important;overflow:visible!important;
+ overflow-wrap:anywhere!important;word-break:normal!important;
+ writing-mode:horizontal-tb!important;white-space:normal!important;
+}
+#anomalScreen .garden-echo-panel::after{
+ content:"";display:block;position:absolute;left:-4px;right:-4px;bottom:-8px;height:9px;
+ background:linear-gradient(#c68b4c,#704327);border-radius:0 0 8px 8px;
+}
+@media(max-width:420px){
+ #anomalScreen .garden-echo-panel #anomalEchoList{
+ grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ }
+}
+</style>
+<style id="anomalGrowthSizes">
+/* 全6属性共通：庭の同じ位置を基準に幼体・成体を拡大縮小 */
+#anomalScreen .anomal-world .anomal-being.anomal-baby{width:66%!important;max-width:300px!important;top:59%!important}
+#anomalScreen .anomal-world .anomal-being.anomal-adult{width:90%!important;max-width:400px!important;top:56%!important}
+#anomalScreen .anomal-world .anomal-being.anomal-egg{width:min(48%,260px)!important;top:58%!important}
+#anomalScreen .anomal-world .anomal-being.anomal-baby .anomal-gif,
+#anomalScreen .anomal-world .anomal-being.anomal-adult .anomal-gif{width:100%!important;height:auto!important;max-height:none!important;object-fit:contain!important}
+</style><style id="remnantGardenStyle">
+#anomalScreen .anomal-world #anomalRemnant{position:absolute;z-index:8;left:50%;top:53%;transform:translate(-50%,-50%);width:48%;height:auto;max-width:215px;padding:0;border:2px solid #b9dc86;border-radius:10px;overflow:hidden;background:#193d2d;box-shadow:0 5px 18px #122f2688;cursor:pointer;color:#fff}
+#anomalScreen .anomal-world #anomalRemnant[hidden]{display:none!important}
+#anomalScreen .anomal-world #anomalRemnant img{display:block;width:100%;aspect-ratio:1/1;object-fit:cover;image-rendering:pixelated}
+#anomalScreen .anomal-world #anomalRemnant span{display:block;font-size:11px;padding:5px 2px;background:#214c33}
+</style></head>
 <body>
 <main>
 <header>
@@ -471,7 +676,7 @@ body:has(#koalaShopScreen:not([hidden])) main { max-width: 960px; }
 <section id="homeScreen">
 <section class="experience">
   <div class="canp" id="canP">0 CanⓅ</div>
-  <div id="homeMiningInventoryDisplay" class="mining-note">原石：0個　／　原石の卵：0個</div>
+  <div id="homeMiningInventoryDisplay" class="mining-note">原石：0個　／　アノマル：0個</div>
   <div class="xp-message">宝石を育てよう！</div>
 
   <button id="loginBonus">🎁 ボーナスを受け取る</button>
@@ -483,11 +688,13 @@ body:has(#koalaShopScreen:not([hidden])) main { max-width: 960px; }
   <h2>今日のきゃない！</h2>
   <div class="home-shortcuts">
     <button id="openStoneMusic" class="shop-button" type="button" aria-label="キャッツのステージ" title="キャッツのステージ"><svg viewBox="0 0 48 48" width="32" height="32" role="img" aria-label="宝石" xmlns="http://www.w3.org/2000/svg"><path d="M11 8h26l9 12-22 24L2 20z" fill="#48d8f0" stroke="#173c42" stroke-width="2" stroke-linejoin="round"/><path d="M11 8l7 12L24 44 2 20z" fill="#8ff3ff"/><path d="M37 8l-7 12-6 24 22-24z" fill="#159cce"/><path d="M18 20h12l-6 24z" fill="#32b6e5"/><path d="M11 8h26l-7 12H18z" fill="#d1ffff"/><path d="M2 20h44" stroke="#ecffff" stroke-width="1.5"/></svg></button>
+    <button type="button" id="openAnomal" class="shop-button" aria-label="アノマルの育成場所" title="アノマルの育成場所">🥚</button>
     <button id="openMiningScreen" class="pickaxe-button" type="button" aria-label="鉱石タヌキのところへ" title="鉱石タヌキ">⛏️</button>
     <button id="openTavern" class="shop-button" type="button" aria-label="酒場" title="酒場">🍺</button>
     <button id="openKoalaShop" class="shop-button" type="button" aria-label="コアラ商店" title="コアラ商店">🐨</button>
   </div>
 </div>
+
 <div class="count" id="count">0 TASKS</div>
 
 <div class="progress-area">
@@ -558,7 +765,7 @@ placeholder="新しいタスクを入力..." required>
     <div id="miningReportPanel" class="mining-report" hidden></div>
     <div class="mining-inventory">
       <strong>今回の採掘結果</strong>
-      <div id="miningInventoryDisplay" class="mining-note-box">原石：0個　／　原石の卵：0個</div>
+      <div id="miningInventoryDisplay" class="mining-note-box">原石：0個　／　アノマル：0個</div>
     </div>
     <details class="mining-test" id="developerTestPanel">
       <summary>🧪 開発者テストモード（本番データとは分離）</summary>
@@ -672,7 +879,10 @@ placeholder="新しいタスクを入力..." required>
  <div id="stoneTestArea" hidden><button id="stoneTestAdd" type="button">🧪 テスト用：原石を3個追加</button><span>（テストモード専用・採掘を待たずに試せるよ）</span></div>
  <div class="cats-library"><h3>🎵 音楽ライブラリ</h3><div id="catsSevenCatalog" style="background:#26153f;border:2px solid #bc8bdf;border-radius:12px;padding:14px;margin:14px 0;color:#fff2ff"><strong>🎸 キャッツ採用曲・全7曲</strong><div style="font-size:13px;line-height:1.9;margin-top:8px">銀河横断バス ／ 星の手紙 ／ 夜市のステップ ／ 午前零時の散歩道 ／ 火花のダンス ／ 逆光の階段 ／ 明日まで走れ！</div><small>原石6個でライブをすると、この7曲から1曲が生まれます</small></div><div id="stoneSongList"></div><p class="cats-small">曲は自動保存されるよ。再生するときは音量に注意してね</p></div>
 </section>
-</main>
+<section id="anomalScreen" class="mining-panel" hidden>
+<div class="anomal-world" id="anomalWorld"><svg class="anomal-land" viewBox="0 0 360 640" preserveAspectRatio="xMidYMid slice" aria-hidden="true" shape-rendering="crispEdges"><rect width="360" height="640" fill="#8ebdbd"/><path d="M0 0H80V35H115V65H140V95H220V65H250V35H280V0H360V640H0Z" fill="#65776b"/><path d="M0 45H42V100H70V155H95V230H120V320H0ZM360 42H320V100H295V160H270V230H245V320H360Z" fill="#3d514b"/><path d="M0 165H42V200H75V260H105V350H0ZM360 165H315V210H285V260H255V350H360Z" fill="#4f6353"/><path d="M0 320H80V300H140V280H220V300H280V320H360V640H0Z" fill="#6e8959"/><path d="M0 405H65V384H125V365H235V384H300V405H360V640H0Z" fill="#91a36a"/><path d="M120 640V540H145V480H215V540H240V640Z" fill="#b0ad83"/><g fill="#b8c68a"><rect x="0" y="330" width="8" height="3"/><rect x="73" y="377" width="8" height="3"/><rect x="146" y="424" width="8" height="3"/><rect x="219" y="471" width="8" height="3"/><rect x="292" y="518" width="8" height="3"/><rect x="15" y="565" width="8" height="3"/><rect x="88" y="612" width="8" height="3"/><rect x="161" y="369" width="8" height="3"/><rect x="234" y="416" width="8" height="3"/><rect x="307" y="463" width="8" height="3"/><rect x="30" y="510" width="8" height="3"/><rect x="103" y="557" width="8" height="3"/><rect x="176" y="604" width="8" height="3"/><rect x="249" y="361" width="8" height="3"/><rect x="322" y="408" width="8" height="3"/><rect x="45" y="455" width="8" height="3"/><rect x="118" y="502" width="8" height="3"/><rect x="191" y="549" width="8" height="3"/><rect x="264" y="596" width="8" height="3"/><rect x="337" y="353" width="8" height="3"/><rect x="60" y="400" width="8" height="3"/><rect x="133" y="447" width="8" height="3"/><rect x="206" y="494" width="8" height="3"/><rect x="279" y="541" width="8" height="3"/><rect x="2" y="588" width="8" height="3"/><rect x="75" y="345" width="8" height="3"/><rect x="148" y="392" width="8" height="3"/><rect x="221" y="439" width="8" height="3"/><rect x="294" y="486" width="8" height="3"/><rect x="17" y="533" width="8" height="3"/><rect x="90" y="580" width="8" height="3"/><rect x="163" y="337" width="8" height="3"/><rect x="236" y="384" width="8" height="3"/><rect x="309" y="431" width="8" height="3"/><rect x="32" y="478" width="8" height="3"/></g><g fill="#e3c995"><rect x="35" y="430" width="5" height="5"/><rect x="300" y="470" width="5" height="5"/><rect x="88" y="555" width="5" height="5"/></g></svg><div class="anomal-top"><button id="anomalBack">← 戻る</button><strong>秘密の育成場所</strong><span id="anomalSky"></span></div><div id="anomalList"></div><div class="anomal-echo-shelf"><div class="anomal-shelf-title">✦ 心の残響</div><div id="anomalEchoList"></div></div></div><div class="garden-status" id="anomalGardenStatus" aria-live="polite">今は静かな育成場所</div><div class="anomal-tools"><p id="anomalStock"></p><button id="anomalPlace">アノマルを設置する</button><p id="anomalHint"></p></div>
+<div id="anomalTest" hidden><button id="anomalTestAdd">テスト用アノマル＋1</button><button id="anomalTestDay">ゲーム内1日進める</button><button id="anomalTestAdvance">ゲーム内7日進める</button></div>
+</section></main>
 <div id="canPShortageToast" class="canp-shortage-toast" role="status" aria-live="polite" hidden>
   <span class="canp-shortage-title">💦 CanⓅが足りないよ〜！</span>
   <span class="canp-shortage-detail" id="canPShortageDetail">もう少し貯めてから来てね</span>
@@ -836,7 +1046,7 @@ function render() {
   updateProgress();
 
   canPDisplay.textContent = `${canP} CanⓅ`;
-  document.getElementById("homeMiningInventoryDisplay").textContent = `原石：${rawStoneCount}個　／　原石の卵：${stoneEggCount}個`;
+  document.getElementById("homeMiningInventoryDisplay").textContent = `原石：${rawStoneCount}個　／　アノマル：${stoneEggCount}個`;
 
   if (tasks.length === 0) {
     list.innerHTML = '<li class="empty">タスクはありません</li>';
@@ -1339,7 +1549,7 @@ function renderMiningCourses() {
 }
 function renderMiningExtra() {
   miningInventoryDisplay.textContent = miningResult
-    ? `原石：${miningResult.ore}個　／　原石の卵：${miningResult.egg ? "1個" : "0個"}`
+    ? `原石：${miningResult.ore}個　／　アノマル：${miningResult.egg ? "1個" : "0個"}`
     : "まだ採掘結果はありません";
   if (miningBentoDisplay) miningBentoDisplay.textContent = `所持数：${miningBentoCount}個`;
   updateRpgWallets();
@@ -1363,7 +1573,7 @@ function renderMiningReport() {
     heading.textContent = "鉱石タヌキから帰還報告！";
     const body = document.createElement("div");
     body.className = "mining-note-box";
-    body.textContent = `${r.ore ? "ふふん、仕事はきっちりやったぞ！" : "……今回は見つからなかった。次は頑張る"}\n${r.courseName}コースの結果だよ。\n原石：${r.ore}個\n原石の卵：${r.egg ? "発見！" : "発見できず"}\n${toolText}`;
+    body.textContent = `${r.ore ? "ふふん、仕事はきっちりやったぞ！" : "……今回は見つからなかった。次は頑張る"}\n${r.courseName}コースの結果だよ。\n原石：${r.ore}個\nアノマル：${r.egg ? "発見！" : "発見できず"}\n${toolText}`;
     const button = document.createElement("button");
     button.textContent = "報告を受け取る";
     button.addEventListener("click", receiveMiningReport);
@@ -1381,7 +1591,7 @@ function renderMiningReport() {
       const reportDate = Number.isFinite(timestamp) && timestamp > 0
         ? new Date(timestamp).toLocaleDateString("ja-JP", { timeZone:"UTC", month:"numeric", day:"numeric" })
         : "日付不明";
-      item.textContent = `${reportDate}｜${report.courseName}｜原石${report.ore}個｜卵${report.egg ? "発見" : "なし"}｜${report.read ? "既読" : "未読"}`;
+      item.textContent = `${reportDate}｜${report.courseName}｜原石${report.ore}個｜アノマル${report.egg ? "発見" : "なし"}｜${report.read ? "既読" : "未読"}`;
       miningReportPanel.appendChild(item);
     });
   }
@@ -1396,7 +1606,7 @@ function showMiningResultDialogue() {
     return;
   }
   const issue = r.toolEvent ? `${r.toolEvent.name}：${r.toolEvent.type}` : "道具のトラブルなし";
-  tanuukiDialogue.textContent = `${r.ore ? "おう、戻ったぞ！ 仕事はきっちりやった！" : "……今回は収穫が少なかったんだ"}\n【今回の採掘結果】\n${r.courseName}コース\n原石：${r.ore}個\n原石の卵：${r.egg ? "発見！" : "なし"}\n${issue}`;
+  tanuukiDialogue.textContent = `${r.ore ? "おう、戻ったぞ！ 仕事はきっちりやった！" : "……今回は収穫が少なかったんだ"}\n【今回の採掘結果】\n${r.courseName}コース\n原石：${r.ore}個\nアノマル：${r.egg ? "発見！" : "なし"}\n${issue}`;
   tanuukiActions.innerHTML = "";
   if (gameNow() >= miningReportAvailableAt) {
     addTanuukiButton("報告を受け取る", receiveMiningReport);
@@ -1415,7 +1625,7 @@ function receiveMiningReport() {
   if (!miningResult || miningReportReceived || gameNow() < miningReportAvailableAt) return;
   rawStoneCount += miningResult.ore;
   stoneAddMined(miningResult.ore);
-  if (miningResult.egg) stoneEggCount++;
+  if (miningResult.egg) anomalAcquire();
   if (miningResult.toolEvent) {
     const ev = miningResult.toolEvent;
     miningTools[ev.id] = false;
@@ -1431,15 +1641,15 @@ function receiveMiningReport() {
   localStorage.setItem("myCanISelectedMiningCourse", "");
   saveMiningState(); save(); renderMiningTools(); renderMiningCourses(); renderMiningExtra();
   if (isTanuukiAway()) { showTanuukiAway(); return; }
-  tanuukiDialogue.textContent = `報告を受け取ってくれてありがとう！\n【今回の採掘結果】\n${miningResult.courseName}コース\n原石：${miningResult.ore}個\n原石の卵：${miningResult.egg ? "発見！" : "なし"}\n${miningResult.toolEvent ? miningResult.toolEvent.name + "：" + miningResult.toolEvent.type : "道具のトラブルなし"}`;
+  tanuukiDialogue.textContent = `報告を受け取ってくれてありがとう！\n【今回の採掘結果】\n${miningResult.courseName}コース\n原石：${miningResult.ore}個\nアノマル：${miningResult.egg ? "発見！" : "なし"}\n${miningResult.toolEvent ? miningResult.toolEvent.name + "：" + miningResult.toolEvent.type : "道具のトラブルなし"}`;
   tanuukiActions.innerHTML = "";
   addTanuukiButton("次の採掘を頼む", showMiningPreparationMenu);
   addTanuukiButton("帰る", showHomeScreen);
   return;
   if (miningResult.egg) {
     tanuukiDialogue.textContent = miningResult.ore === 0
-      ? "今回は原石が見つからなくてな……いや、待て。これは……原石の卵！？"
-      : "おう、戻ったぞ。まあ、いつも通りの仕事だな……ん？ こ、これは……原石の卵！？";
+      ? "今回は原石が見つからなくてな……いや、待て。これは……アノマル！？"
+      : "おう、戻ったぞ。まあ、いつも通りの仕事だな……ん？ こ、これは……アノマル！？";
     tanuukiActions.innerHTML = "";
     addTanuukiButton("続きを聞く", () => {
       tanuukiDialogue.textContent = "見つけたのはオレだぞ！ ……いや、落ち着け。これはプレイヤーの物だ。分かってる。けど、すごい発見だろ！";
@@ -1721,14 +1931,14 @@ function tavernMiningReport() {
   }
   const r = miningResult;
   const issue = r.toolEvent ? `${r.toolEvent.name}：${r.toolEvent.type}` : "道具のトラブルなし";
-  tavernDialogue.textContent = `${r.ore ? "おう、戻ったぞ！ 仕事はきっちりやった！" : "……今回は原石が見つからなかったんだ"}\n【今回の採掘結果】\n${r.courseName}コース\n原石：${r.ore}個\n原石の卵：${r.egg ? "発見！" : "なし"}\n${issue}`;
+  tavernDialogue.textContent = `${r.ore ? "おう、戻ったぞ！ 仕事はきっちりやった！" : "……今回は原石が見つからなかったんだ"}\n【今回の採掘結果】\n${r.courseName}コース\n原石：${r.ore}個\nアノマル：${r.egg ? "発見！" : "なし"}\n${issue}`;
   tavernActions.innerHTML = "";
   tavernButton("報告を受け取る", () => {
     // 共通処理で原石・卵・装備・既読状態を確定。二重受取を防ぐ。
     if (!miningResult || miningReportReceived || gameNow() < miningReportAvailableAt) return;
     const result = miningResult;
     receiveMiningReport();
-    tavernDialogue.textContent = `報告を受け取ってくれてありがとう！\n原石：${result.ore}個\n原石の卵：${result.egg ? "発見！" : "なし"}`;
+    tavernDialogue.textContent = `報告を受け取ってくれてありがとう！\n原石：${result.ore}個\nアノマル：${result.egg ? "発見！" : "なし"}`;
     tavernActions.innerHTML = "";
     tavernButton("次の採掘を頼む", tavernCourseMenu);
     tavernButton("戻る", tavernMenu);
@@ -1804,6 +2014,7 @@ function showKoalaShopScreen() {
   window.scrollTo(0, 0);
 }
 function showHomeScreen() {
+  document.getElementById("anomalScreen").hidden = true;
   document.getElementById("stoneMusicScreen").hidden = true;
   clearCanPEffect();
   document.getElementById("miningScreen").hidden = true;
@@ -2980,4 +3191,157 @@ window.catsApprovedAudio={
  document.getElementById('catsStop').addEventListener('click',()=>{window.catsApprovedAudio.stop();window.catsMusicEngine.stop();message.textContent='演奏を停止したよ'});
  document.getElementById('backHomeFromStone').addEventListener('click',()=>{window.catsApprovedAudio.stop();window.catsMusicEngine.stop()});
 })();
-</script></body></html>
+</script><script>
+const anomalKey = "myCanIAnomalV1";
+const anomalDuration = 7*24*3600000;
+const anomalDay = 24*3600000;
+const anomalBaby = 4*anomalDay, anomalAdult = 6*anomalDay;
+let anomalRecords = stoneRead(anomalKey, []);
+let anomalStock = stoneRead("myCanIAnomalStockV2", []);
+function anomalDraw(){const x=Math.random()*100;return x<22.5?"火":x<45?"水":x<67.5?"土":x<90?"風":x<95?"陰":"陽";}
+function anomalSave(){localStorage.setItem(anomalKey,JSON.stringify(anomalRecords));localStorage.setItem("myCanIAnomalStockV2",JSON.stringify(anomalStock));}
+while(anomalStock.length<stoneEggCount) anomalStock.push({attribute:anomalDraw(),acquiredAt:gameNow()});
+if(anomalStock.length>stoneEggCount) anomalStock.length=stoneEggCount;
+anomalSave();
+function anomalAcquire(){anomalStock.push({attribute:anomalDraw(),acquiredAt:gameNow()});stoneEggCount++;anomalSave();}
+function anomalRefresh(){
+ const now=gameNow();let changed=false;
+ for(const r of anomalRecords){
+  const birth=r.placedAt+anomalDuration, adult=birth+anomalBaby, departure=adult+anomalAdult;
+  if(!r.hatched && now>=birth){r.hatched=true;r.hatchedAt=birth;changed=true;}
+  if(r.hatched && !r.adultAt && now>=adult){r.adultAt=adult;changed=true;}
+  if(r.hatched && !r.departedAt && now>=departure){r.departedAt=departure;changed=true;}
+  if(r.departedAt && !r.echo){r.echo={attribute:r.attribute,createdAt:r.departedAt,seed:Math.floor(Math.random()*4294967296),melodyIndex:Math.floor(Math.random()*9),collected:false};changed=true;}
+  if(r.echo && r.echo.collected===undefined){r.echo.collected=true;changed=true;}
+  if(r.echo && (!Number.isInteger(r.echo.melodyIndex)||r.echo.melodyIndex<0||r.echo.melodyIndex>8)){r.echo.melodyIndex=Math.floor((r.echo.seed>>>0)/4294967296*9);changed=true;}
+ }if(changed)anomalSave();
+}
+const anomalSigns={"火":"🔥 小さな火の粉が舞っている","水":"💧 表面に水滴が現れている","土":"🌱 ツタと小さな花が生えている","風":"🍃 周囲を葉が舞っている","陰":"🌑 影が不思議な動きをしている","陽":"☀️ 光の粒が漂っている"};
+
+const echoColors={火:'#e99976',水:'#76bce9',土:'#92c58b',風:'#9bd8c9',陰:'#aa91d8',陽:'#ecd17e'};
+let echoContext, echoVoice=null, echoPlaying=null, echoSerial=0;
+const echoSongs=[
+['たのしかったよ','透明なカリンバ', [64,67,69,67,64,62], [.65,.20,.26,.30,.26,.90],{}],
+['ぼく、いってくるね','柔らかな弦', [62,64,67,69,67,64], [.20,.22,.32,.30,.27,1.1],{0:.13}],
+['わすれないよ','遠いオルゴール', [69,67,64,67,64,62], [.28,.30,.42,.30,.30,1.15],{2:.30}],
+['また、あそぼうね','風のオカリナ', [64,67,64,67,69,74], [.22,.38,.26,.30,.40,.95],{1:.18}],
+['きみも、げんきでね','息のような笛', [69,67,64,69,67,64,62], [.28,.24,.45,.32,.28,.30,1.0],{2:.28}],
+['ここが、すきだったよ','淡いハープ', [67,64,62,67,64,62,64], [.70,.30,.24,.35,.22,.30,1.05],{1:.15,4:.15}],
+['いつか、かえってくるよ','遠いフルート', [62,64,67,69,67,69,74], [.24,.28,.36,.80,.23,.28,1.15],{2:.17}],
+['ぼくは、ぼくになれたかな？','揺れるテルミン', [64,67,64,64,67,69,67,64,69], [.23,.28,.45,.23,.25,.32,.25,.65,1.10],{2:.23}],
+['きみといられて、よかった','温かな弦の歌', [64,67,69,67,64,62,64,62,60], [.26,.28,.35,.27,.30,.42,.32,.32,1.35],{5:.22}]
+];
+const echoVoices=[[[1,.14,.06],.025,.38,0],[[1,.28,.09,.035],.025,.43,0],[[1,.06,.08],.025,.62,0],[[1,.07,.025],.11,0,8],[[1,.13,.04],.10,0,9],[[1,.22,.07],.025,.65,0],[[1,.08,.035],.13,0,13],[[1,.055,.015],.13,0,17],[[1,.30,.10,.035],.14,0,12]];
+function echoHz(n){return 440*2**((n-69)/12)}
+function echoNote(ctx,n,t,d,v,sp,dest,prev){const [harm,a,dec,vib]=sp;const g=ctx.createGain();g.connect(dest);let end=t+d+.48;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v,t+Math.min(a,d*.35));g.gain.exponentialRampToValueAtTime(dec?Math.max(.001,v*Math.exp(-d/dec)):v*.64,t+d);g.gain.exponentialRampToValueAtTime(.0001,end);const l=ctx.createOscillator(),lg=ctx.createGain();l.frequency.value=4.7;lg.gain.setValueAtTime(0,t);lg.gain.linearRampToValueAtTime(vib,t+d*.7);l.connect(lg);l.start(t);l.stop(end);harm.forEach((h,k)=>{let o=ctx.createOscillator(),m=ctx.createGain();m.gain.value=h/harm.reduce((x,y)=>x+y,0);o.frequency.setValueAtTime(echoHz(n)*(k+1)*(prev!=null&&!dec?2**((prev-n)*.14/12):1),t);o.frequency.exponentialRampToValueAtTime(echoHz(n)*(k+1),t+Math.min(.12,d*.4));lg.connect(o.detune);o.connect(m);m.connect(g);o.start(t);o.stop(end);});}
+function echoStop(){echoSerial++;if(echoVoice&&echoContext){try{echoVoice.gain.cancelScheduledValues(echoContext.currentTime);echoVoice.gain.setTargetAtTime(0,echoContext.currentTime,.035);}catch{}}echoVoice=null;echoPlaying=null;}
+async function echoPlay(r,i){echoStop();const token=echoSerial;try{
+ const C=window.AudioContext||window.webkitAudioContext;if(!C)throw Error('unsupported');if(!echoContext)echoContext=new C();await echoContext.resume();if(token!==echoSerial)return;
+ const ctx=echoContext,master=ctx.createGain(),filter=ctx.createBiquadFilter();master.gain.value=.8;filter.type='lowpass';filter.frequency.value=3400;master.connect(filter);filter.connect(ctx.destination);
+ const rev=ctx.createConvolver(),len=Math.floor(ctx.sampleRate*2.4),buf=ctx.createBuffer(2,len,ctx.sampleRate);for(let c=0;c<2;c++){let ar=buf.getChannelData(c);for(let j=0;j<len;j++)ar[j]=(Math.random()*2-1)*Math.pow(1-j/len,3)*.33;}rev.buffer=buf;const wet=ctx.createGain();wet.gain.value=.22;filter.connect(rev);rev.connect(wet);wet.connect(ctx.destination);
+ echoVoice=master;echoPlaying=i;anomalRender();const k=r.echo.melodyIndex,p=echoSongs[k];let t=ctx.currentTime+.08;
+ p[2].forEach((n,j)=>{const d=p[3][j],start=t;echoNote(ctx,n,t,d,.19*(j===p[2].length-1?.70:j%3===0?1:.85),echoVoices[k],master,p[2][j-1]);
+ setTimeout(()=>{if(token!==echoSerial)return;const el=document.querySelector(`[data-echo-index="${i}"]`);if(!el)return;el.classList.add('echo-beat');setTimeout(()=>{if(token===echoSerial)el.classList.remove('echo-beat');},Math.max(110,d*700));},Math.max(0,(start-ctx.currentTime)*1000));
+ t+=d+(echoVoices[k][2]?.035:-.035)+(p[4][j]||0);});
+ setTimeout(()=>{master.disconnect();filter.disconnect();rev.disconnect();wet.disconnect();if(token===echoSerial){echoVoice=null;echoPlaying=null;anomalRender();}},Math.max(0,(t+2.8-ctx.currentTime)*1000));
+ }catch(e){if(token===echoSerial){echoStop();anomalRender();alert('音を再生できませんでした。もう一度お試しください');}}}
+
+function anomalRender(){
+ anomalRefresh();const now=gameNow();const hour=new Date(now).getUTCHours();const night=hour<6||hour>=18;document.getElementById("anomalWorld").classList.toggle("anomal-night",night);document.getElementById("anomalSky").textContent=night?"☾":"☀";const active=anomalRecords.some(r=>!r.hatched);
+ document.getElementById("anomalStock").textContent=`未設置：${stoneEggCount}個`;
+ document.getElementById("anomalPlace").disabled=stoneEggCount<1||active;
+ document.getElementById("anomalHint").textContent=active?"育成中は次のアノマルを設置できません":stoneEggCount<1?"鉱山でアノマルを発見すると設置できます":"設置すると自然孵化までの時間が進みます";
+ const gardenWorld=document.getElementById("anomalWorld");
+ const currentGarden=anomalRecords.find(r=>!r.echo);
+ const gardenElapsed=currentGarden?Math.max(0,now-currentGarden.placedAt):0;
+ const gardenEgg=!!(currentGarden&&!currentGarden.hatched);
+ gardenWorld.classList.remove("anomal-has-egg");
+ gardenWorld.classList.remove("anomal-glowing");
+ const gardenStatus=document.getElementById("anomalGardenStatus");
+ if(!currentGarden){gardenStatus.textContent="今は静かな育成場所。アノマルを設置すると、ここで時間が進みます";}
+ else{
+ const s=currentGarden.adultAt?currentGarden.adultAt:currentGarden.hatched?currentGarden.hatchedAt:currentGarden.placedAt;
+ const d=currentGarden.adultAt?anomalAdult:currentGarden.hatched?anomalBaby:anomalDuration;
+ const rem=Math.ceil(Math.max(0,s+d-now)/7200000);
+ gardenStatus.textContent=(currentGarden.hatched?(currentGarden.adultAt?"成体":"幼体")+"（"+currentGarden.attribute+"属性）":"孵化を待つアノマル")+"　次の変化まで約"+rem+"時間（現実時間）";
+ const pb=document.createElement("progress");pb.max=100;pb.value=Math.max(0,Math.min(100,(now-s)/d*100));gardenStatus.appendChild(pb);
+ }
+ const list=document.getElementById("anomalList");
+ const sceneKey=JSON.stringify(anomalRecords.filter(r=>!r.echo).map(r=>[
+ r.placedAt,r.hatched,r.adultAt,r.attribute, r.hatched?4:(now-r.placedAt<anomalDay?0:now-r.placedAt<3*anomalDay?1:now-r.placedAt<6*anomalDay?2:3)
+ ]));
+ const rebuildScene=list.dataset.sceneKey!==sceneKey;
+ if(rebuildScene){list.replaceChildren();list.dataset.sceneKey=sceneKey;}
+ const echoes=document.getElementById("anomalEchoList");
+ const echoSignature=JSON.stringify([anomalRecords.map(r=>r.echo?{...r.echo}:null),echoPlaying]);
+ const rebuildEcho=echoes.dataset.signature!==echoSignature;if(rebuildEcho){echoes.replaceChildren();echoes.dataset.signature=echoSignature;}
+ anomalRecords.forEach((r,i)=>{
+  if(r.echo){if(!r.echo.collected)return;if(rebuildEcho){const e=document.createElement("button");e.type="button";e.className="mining-note-box echo-crystal"+(echoPlaying===i?" echo-glow":"");e.style.setProperty("--echo-color",echoColors[r.echo.attribute]||"#aaa");e.dataset.echoIndex=i;e.innerHTML=`<svg class="echo-art" viewBox="0 0 48 48" aria-hidden="true"><ellipse class="halo" cx="24" cy="24" rx="22" ry="22" fill="currentColor" style="filter:blur(6px)"/><path d="M8 40H40V43H8Z" fill="#343e40"/><path d="M14 38L10 20 23 5 35 15 38 29 27 40Z" fill="currentColor" stroke="#36434a" stroke-width="1.5"/><path d="M23 5L19 23 27 40 14 38 10 20Z" fill="#162a38" opacity=".36"/><path d="M23 5L35 15 19 23Z" fill="#fff" opacity=".46"/><path d="M35 15L38 29 27 40 19 23Z" fill="#fff" opacity=".12"/><path class="core" d="M23 14L29 22 25 33 19 24Z" fill="#fff"/><path d="M13 20L17 16M29 11L33 15" stroke="#fff" opacity=".55" stroke-width="1.5"/></svg><span></span>`;e.lastElementChild.textContent=`心の残響 ${i+1}（${r.echo.attribute}属性） ${echoPlaying===i?"♪ 再生中":"♪ 触れて聴く"}`;e.onclick=()=>echoPlay(r,i);echoes.appendChild(e);}return;}
+  if(!rebuildScene)return;
+  const item=document.createElement("button");item.type="button";item.className="anomal-being"+(r.hatched?(r.adultAt?" anomal-adult":" anomal-baby"):" anomal-egg");
+  const elapsed=Math.max(0,now-r.placedAt);
+  const stage=elapsed<anomalDay?"弱い光：中心がかすかに明滅する":elapsed<3*anomalDay?"強い光：中心の輝きが増す":elapsed<6*anomalDay?"属性の目覚め："+anomalSigns[r.attribute]:"孵化直前：眩い光に包まれる";
+  const start=r.adultAt?r.adultAt:r.hatched?r.hatchedAt:r.placedAt;
+  const duration=r.adultAt?anomalAdult:r.hatched?anomalBaby:anomalDuration;
+  const remaining=Math.ceil(Math.max(0,start+duration-now)/7200000);
+  const description=r.hatched?`${r.adultAt?"✨ 成体":"🐾 幼体"} ${i+1}（${r.attribute}属性）　${r.adultAt?"旅立ち":"成体"}まで約${remaining}時間（現実時間）`:`🥚 アノマル ${i+1}：${stage}　残り約${remaining}時間（現実時間）`;
+  const color=echoColors[r.attribute]||"#ddd";const glow=elapsed>=anomalDay;const shape=r.hatched?`<ellipse cx="50" cy="65" rx="${r.adultAt?35:23}" ry="${r.adultAt?28:20}" fill="${color}"/><path d="M30 48L23 23L43 42M57 42L76 23L70 48" fill="${color}"/><g fill="#293b38"><circle cx="42" cy="59" r="3"/><circle cx="58" cy="59" r="3"/></g>`:`<path d="M25 78L17 51L30 23L49 12L70 25L83 52L73 79L50 87Z" fill="#818f86" stroke="#465b53" stroke-width="3"/><path d="M49 12L42 49L25 78L17 51L30 23Z" fill="#53685f"/>${glow?`<circle class="anomal-core" cx="50" cy="51" r="${elapsed>=3*anomalDay?12:5}" fill="${elapsed>=5*anomalDay?color:'#d8fff0'}"/>`:''}`;item.innerHTML=`<svg viewBox="0 0 100 100" aria-hidden="true"><ellipse cx="50" cy="87" rx="34" ry="7" fill="#263c32" opacity=".4"/>${shape}</svg><small></small>`;item.querySelector('small').textContent=description;
+  if(r.hatched){
+   const gifNames={"火":["火_情熱_幼体_ぷるぷる.gif","火_情熱_成体_ふわふわ.gif"],
+   "水":["水_慈愛_幼体_ぷるぷる.gif","水_慈愛_成体_ふわふわ.gif"],
+   "土":["土_誠実_幼体_ぷるぷる.gif","土_誠実_成体_ふわふわ.gif"],
+   "風":["風_自由_幼体_ぷるぷる.gif","風_自由_成体_ふわふわ.gif"],
+   "陰":["陰_幼体_ぷるぷる.gif","陰_成体_ふわふわ.gif"],
+   "陽":["陽_幼体_ぷるぷる.gif","陽_成体_ふわふわ.gif"]};
+   const img=document.createElement("img");img.className="anomal-gif";
+   img.src="assets/"+gifNames[r.attribute][r.adultAt?1:0];img.alt=r.attribute+"属性のアノマル";
+   item.prepend(img);
+  }else{
+    // 採用済み鉱石卵GIFを背景の庭に重ねる。静止画の卵は使用しない。
+    // 生まれる属性は設置時に決まっている。時間経過で別属性の卵に変化させない。
+    const eggByAttribute={
+      "火":"egg_fire.gif","水":"egg_water.gif","土":"egg_earth.gif",
+      "風":"egg_wind.gif","陰":"egg_shadow.gif","陽":"egg_light.gif"
+    };
+    const eggImage=document.createElement("img");
+    eggImage.className="anomal-gif anomal-egg-gif";
+    const phase=elapsed<anomalDay?0:elapsed<3*anomalDay?1:elapsed<6*anomalDay?2:3;
+    eggImage.src="assets/"+(phase<2?(phase===0?"egg_weak.gif":"egg_bright.gif"):(eggByAttribute[r.attribute]||"egg_shadow.gif"));
+    eggImage.classList.add("egg-phase-"+phase);
+    eggImage.alt=phase<2?"光を育む鉱石卵":phase===2?"属性が溢れ出す鉱石卵":"孵化直前、眩しく光る鉱石卵";
+    item.prepend(eggImage);
+  }
+  item.onclick=()=>{if(!r.hatched)return; if(Math.random()<.3)return;try{const C=window.AudioContext||window.webkitAudioContext;if(!echoContext)echoContext=new C();echoContext.resume().then(()=>{const t=echoContext.currentTime;const o=echoContext.createOscillator(),g=echoContext.createGain();o.type='sine';o.frequency.setValueAtTime(r.adultAt?440:660,t);o.frequency.exponentialRampToValueAtTime((r.adultAt?440:660)*[.75,1.25,1.5][Math.floor(Math.random()*3)],t+.2);g.gain.setValueAtTime(.07,t);g.gain.exponentialRampToValueAtTime(.0001,t+.32);o.connect(g);g.connect(echoContext.destination);o.start(t);o.stop(t+.33);});}catch(e){}};
+const bar=document.createElement("progress");bar.max=100;bar.value=Math.max(0,Math.min(100,(now-start)/duration*100));bar.style.width="100%";item.appendChild(bar);list.appendChild(item);
+ });
+ if(rebuildScene&&!anomalRecords.some(r=>!r.echo)){const empty=document.createElement("div");empty.className="anomal-empty";empty.innerHTML=`<div class="anomal-empty-icon">✧</div><strong>今は静かな育成場所</strong><span>アノマルを設置すると、ここに姿が現れます</span>`;list.appendChild(empty);}
+ if(rebuildEcho&&!echoes.children.length)echoes.textContent="まだ心の残響はありません";
+ const waiting=anomalRecords.findIndex(r=>r.echo&&!r.echo.collected);
+ const remnant=document.getElementById("anomalRemnant");
+ remnant.hidden=waiting<0;
+ remnant.onclick=()=>{if(waiting<0)return;const r=anomalRecords[waiting];r.echo.collected=true;anomalSave();anomalRender();echoPlay(r,waiting);};
+
+}
+document.getElementById("openAnomal").onclick=()=>{clearCanPEffect();document.getElementById("homeScreen").hidden=true;document.getElementById("anomalScreen").hidden=false;anomalRender();window.scrollTo(0,0);};
+document.getElementById("anomalBack").onclick=()=>{echoStop();showHomeScreen();};
+document.getElementById("anomalPlace").onclick=()=>{anomalRefresh();if(stoneEggCount<1||anomalRecords.some(r=>!r.hatched))return;const egg=anomalStock.shift();if(!egg)return;stoneEggCount--;anomalRecords.push({...egg,placedAt:gameNow(),hatched:false});anomalSave();saveMiningState();renderMiningExtra();anomalRender();};
+document.getElementById("anomalTest").hidden=!__testActive;
+document.getElementById("anomalTestAdd").onclick=()=>{if(!__testActive)return;anomalAcquire();saveMiningState();renderMiningExtra();anomalRender();};
+document.getElementById("anomalTestDay").onclick=()=>{if(!__testActive)return;setTestTime(gameNow()+anomalDay);anomalRender();};
+document.getElementById("anomalTestAdvance").onclick=()=>{if(!__testActive)return;setTestTime(gameNow()+anomalDuration);anomalRender();};
+setInterval(()=>{if(!document.getElementById("anomalScreen").hidden)anomalRender();else anomalRefresh();},1000);anomalRender();
+</script>
+<script id="officialAnomalGardenBehavior">
+(function(){
+ const world=document.getElementById('anomalWorld');
+ const remnant=document.createElement('button');
+ remnant.id='anomalRemnant';remnant.type='button';remnant.hidden=true;
+ remnant.setAttribute('aria-label','残された結晶を拾い、音とともに心の残響を棚に収める');
+ remnant.innerHTML='<img src="assets/echo_remnant_green.png" alt="草むらに残された結晶"><span>残された結晶を拾う ♪</span>';
+ world.appendChild(remnant);
+ const shelf=world.querySelector('.anomal-echo-shelf');
+ shelf.classList.add('garden-echo-panel');
+ world.parentNode.insertBefore(shelf,document.getElementById('anomalTest'));
+})();
+</script>
+</body></html>
