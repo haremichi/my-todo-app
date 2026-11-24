@@ -765,7 +765,26 @@ main{max-width:740px!important;margin:0 auto!important}header{padding:22px 0 20p
 body:has(#anomalScreen:not([hidden])) main>header{display:none!important}
 body:has(#anomalScreen:not([hidden])){overflow-x:hidden}
 </style>
-<style id="mci-v17-garden-home">.mci-garden-home-nav{display:flex;justify-content:center;padding:16px 12px 24px}.mci-garden-home-nav button{border:1px solid #aec9bc;background:#e6f0e9;color:#254c3d;border-radius:14px;padding:12px 22px;font:600 14px inherit;cursor:pointer;box-shadow:0 3px 8px #0001}#anomalBack{white-space:nowrap}</style></head>
+<style id="mci-v17-garden-home">.mci-garden-home-nav{display:flex;justify-content:center;padding:16px 12px 24px}.mci-garden-home-nav button{border:1px solid #aec9bc;background:#e6f0e9;color:#254c3d;border-radius:14px;padding:12px 22px;font:600 14px inherit;cursor:pointer;box-shadow:0 3px 8px #0001}#anomalBack{white-space:nowrap}</style><style id="mci-green-clock-css">
+#mci-clock{position:relative;margin:0 auto 18px;padding:14px 17px 16px;border:1.5px solid #b7cf9b;border-radius:24px;background:linear-gradient(125deg,#fdfdf3,#f2f8e8 76%,#e1efcd);box-shadow:0 6px 18px #56734716;color:#36552e;font-family:inherit}
+#mci-clock .wc-heading{text-align:center;font-size:15px;font-weight:800;margin:0 0 12px;color:#365b2d;letter-spacing:.03em}
+#mci-clock .wc-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,.85fr) auto;align-items:center;gap:12px}
+#mci-clock .wc-part{text-align:center;min-width:0}
+#mci-clock .wc-label{font-size:11px;font-weight:700;margin-bottom:5px;white-space:nowrap}
+#mci-clock .wc-pill{height:51px;background:#fffefa;border:1.5px solid #c8d8b0;border-radius:30px;display:flex;align-items:center;justify-content:center;gap:9px;padding:4px 12px;box-sizing:border-box}
+#mci-clock .wc-jptime{font-size:clamp(18px,3.3vw,29px);font-weight:850;font-variant-numeric:tabular-nums;letter-spacing:.015em;white-space:nowrap}
+#mci-clock .wc-symbol{display:flex;align-items:center;justify-content:center;width:37px;height:37px;flex:none}
+#mci-clock .wc-symbol svg{width:100%;height:100%}
+#mci-clock .wc-game-symbol{width:45px;height:45px}
+#mci-clock .wc-listen{border:0;border-radius:30px;background:#729c49;color:white;font-weight:800;font-size:13px;min-height:48px;padding:0 15px;cursor:pointer;box-shadow:0 3px 7px #4d73332b;white-space:nowrap}
+#mci-clock .wc-listen:hover{background:#5c8538}
+#mci-clock .wc-listen:focus-visible{outline:3px solid #c69c50;outline-offset:3px}
+#mci-clock .wc-popup{position:absolute;z-index:5;top:8%;left:50%;max-width:90%;width:max-content;padding:12px 17px;border:1.5px solid #b7ce9b;border-radius:18px;background:#fffff7f7;box-shadow:0 7px 19px #47602f36;text-align:center;font-size:14px;font-weight:800;line-height:1.5;pointer-events:none;opacity:0;color:#41652f}
+#mci-clock .wc-popup.wc-pop{animation:wc-gain 2s ease-out forwards}
+@keyframes wc-gain{0%{opacity:0;transform:translate(-50%,28px) scale(.7)}14%{opacity:1;transform:translate(-50%,0) scale(1.08)}27%{transform:translate(-50%,-4px) scale(1)}75%{opacity:1;transform:translate(-50%,-17px)}100%{opacity:0;transform:translate(-50%,-39px)}}
+@media(max-width:520px){#mci-clock{padding:12px 10px;border-radius:18px}#mci-clock .wc-grid{grid-template-columns:minmax(0,1.2fr) minmax(0,.7fr);gap:8px}#mci-clock .wc-listen{grid-column:1/-1;width:100%;min-height:37px}#mci-clock .wc-label{font-size:10px}#mci-clock .wc-pill{height:44px;padding:3px 5px;gap:4px}#mci-clock .wc-symbol{width:27px;height:27px}#mci-clock .wc-game-symbol{width:36px;height:36px}#mci-clock .wc-jptime{font-size:clamp(17px,5vw,24px)}#mci-clock .wc-popup{font-size:12px}}
+@media(prefers-reduced-motion:reduce){#mci-clock .wc-popup.wc-pop{animation:wc-gain 2s steps(1,end) forwards}}
+</style></head>
 <body>
 <main>
 <header>
@@ -1432,16 +1451,16 @@ const tanuukiDialogue = document.getElementById("tanuukiDialogue");
 const tanuukiActions = document.getElementById("tanuukiActions");
 const miningTestClock = document.getElementById("miningTestClock");
 
-// ゲーム世界の24時間＝現実の12時間。日本時間07:00にゲーム06:00を合わせる。
+// ゲーム世界の24時間＝現実の12時間。日本時間08:00・20:00にゲーム06:00を合わせる。
 // タスク・ログイン報酬は従来の現実日付を維持する。
 const REAL_ANCHOR = Date.UTC(2026,10,18,23,0,0);
-const GAME_ANCHOR = Date.UTC(2026,10,19,8,0,0);
+const GAME_ANCHOR = Date.UTC(2026,10,19,6,0,0);
 const GAME_TIME_SHIFT = -5 * 60 * 60 * 1000; // 旧版の時刻データ変換専用
 const oldGameNow = () => Date.now() + GAME_TIME_SHIFT + miningTestOffset;
 function gameNow() { return GAME_ANCHOR + (Date.now()-REAL_ANCHOR)*2 + miningTestOffset; }
 // 既存の予約・採掘途中のデータは残り時間を引き継ぐ（ゲーム内時間へ換算）。
 if (localStorage.getItem("myCanIMiningTimeModelV3") !== "true") {
-  const delta = gameNow()-oldGameNow();
+  const delta = gameNow()+2*3600000-oldGameNow();
   if (miningDepartureAt) miningDepartureAt += delta;
   if (miningStartedAt) miningStartedAt += delta;
   if (miningEndsAt) miningEndsAt += delta;
@@ -1461,12 +1480,27 @@ if (localStorage.getItem("myCanIWorldClockV10") !== "true") {
   localStorage.setItem("myCanIWorldClockV10","true");
   saveMiningState();
 }
+// 時刻原点の修正：既存の経過時間を維持するため、一度だけ保存時刻を補正する。
+if (localStorage.getItem("myCanIClockAnchorV11") !== "true") {
+  const shift = -2*3600000;
+  if (miningDepartureAt) miningDepartureAt += shift;
+  if (miningStartedAt) miningStartedAt += shift;
+  if (miningEndsAt) miningEndsAt += shift;
+  if (miningReportAvailableAt) miningReportAvailableAt += shift;
+  if (miningTripStatus === "reserved" && miningDepartureAt) {
+    const d = new Date(miningDepartureAt); d.setUTCHours(6,0,0,0);
+    if (d.getTime() <= gameNow()) d.setUTCDate(d.getUTCDate()+1);
+    miningDepartureAt = d.getTime();
+  }
+  saveMiningState();
+  localStorage.setItem("myCanIClockAnchorV11","true");
+}
 function gameDateObject(timestamp = gameNow()) { return new Date(timestamp); }
 function gameHour() { return gameDateObject().getUTCHours(); }
-// 採掘の日付境界はゲーム時間00:00。
+// 採掘の日付境界はゲーム時間06:00。
 function gameDayKey(timestamp = gameNow()) {
   const d = gameDateObject(timestamp);
-  // 仕事開始の00:00を採掘日付の境界とする。
+  // 仕事開始の06:00を採掘日付の境界とする。
   d.setUTCHours(d.getUTCHours()-6);
   return d.toISOString().slice(0,10);
 }
@@ -1481,7 +1515,7 @@ function nextGameMorning(from = gameNow()) {
   if (d.getTime() <= from) d.setUTCDate(d.getUTCDate()+1);
   return d.getTime();
 }
-// 仕事終了の04:01以降、報告書を受け取れる。
+// 報告可能時刻は採掘終了時刻をそのまま使用する。
 function nextRelaxTime(from) { return from; }
 function saveMiningState() {
   localStorage.setItem("myCanIMiningTools", JSON.stringify(miningTools));
@@ -1592,7 +1626,7 @@ function showMiningCourseMenu() {
   const nextDeparture = nextGameMorning();
   const alreadyDeparted = miningLastDepartureDay === gameDayKey(nextDeparture);
   const courseAvailable = !busy && toolsReady && !alreadyDeparted;
-  let message = "どのコースにする？\n次のゲーム内00:00に出発するぞ";
+  let message = "どのコースにする？\n次のゲーム内06:00に出発するぞ";
   if (busy) message += "\n※ 先に現在の採掘・帰還報告を終えてくれ";
   if (!toolsReady) message += "\n※ 道具が揃っていない。道具屋で買ってくれ";
   if (alreadyDeparted) message += "\n※ 次回の出発枠は使用済みだ";
@@ -1861,7 +1895,7 @@ function renderTanuukiPanel() {
   }
 }
 // タヌキの居場所はゲーム内時刻だけで一元管理する。
-// 00:00〜04:00 仕事、04:01〜07:00 酒場、07:01〜10:00 就寝、10:01〜23:59 出勤準備。
+// 06:00〜13:59 仕事、14:00〜20:59 酒場、21:00〜00:59 就寝、01:00〜05:59 出勤準備。
 function tanuukiLocation() {
   const d=gameDateObject(); const m=d.getUTCHours()*60+d.getUTCMinutes();
   if(m>=6*60&&m<14*60)return "working";
@@ -3393,6 +3427,13 @@ let anomalRecords = stoneRead(anomalKey, []);
 let anomalStock = stoneRead("myCanIAnomalStockV2", []);
 function anomalDraw(){const x=Math.random()*100;return x<22.5?"火":x<45?"水":x<67.5?"土":x<90?"風":x<95?"陰":"陽";}
 function anomalSave(){localStorage.setItem(anomalKey,JSON.stringify(anomalRecords));localStorage.setItem("myCanIAnomalStockV2",JSON.stringify(anomalStock));}
+if(localStorage.getItem("myCanIAnomalClockAnchorV11")!=="true"){
+ for(const r of [...anomalRecords,...anomalStock]){
+  for(const k of ["acquiredAt","placedAt","hatchedAt","adultAt","departedAt"]) if(typeof r[k]==="number" && r[k]>0) r[k]-=2*3600000;
+  if(r.echo && typeof r.echo.createdAt==="number") r.echo.createdAt-=2*3600000;
+ }
+ anomalSave();localStorage.setItem("myCanIAnomalClockAnchorV11","true");
+}
 while(anomalStock.length<stoneEggCount) anomalStock.push({attribute:anomalDraw(),acquiredAt:gameNow()});
 if(anomalStock.length>stoneEggCount) anomalStock.length=stoneEggCount;
 anomalSave();
@@ -3555,47 +3596,7 @@ setInterval(()=>{if(!document.getElementById("anomalScreen").hidden)anomalRender
 })();
 </script>
 
-<script id="mci-clock-script">
-(function(){
- function start(){
-  const home=document.getElementById('homeScreen');if(!home||document.getElementById('mci-clock'))return;
-  const wrap=document.createElement('div');wrap.id='mci-clock';wrap.className='mci-clock-card mci-sundial-card';
-  wrap.setAttribute('aria-label','ゲーム世界の12時間を示す半円形の日時計');
-  wrap.innerHTML=`<div class="mci-clock-face"><svg viewBox="0 0 200 115" role="img" aria-label="半円のメーターに沿って太陽と月が動く日時計">
-  <defs><linearGradient id="mci-meter-day" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9eaf2"/><stop offset="1" stop-color="#fff8e9"/></linearGradient><linearGradient id="mci-meter-night" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dce3f2"/><stop offset="1" stop-color="#f0f1ec"/></linearGradient></defs>
-  <path id="mci-sky-field" d="M 10 100 A 90 90 0 0 1 190 100 L 10 100 Z" fill="url(#mci-meter-day)"/>
-  <path d="M 10 100 A 90 90 0 0 1 190 100" fill="none" stroke="#fffefa" stroke-width="10" stroke-linecap="round"/>
-  <path d="M 10 100 A 90 90 0 0 1 190 100" fill="none" stroke="#a9bdb3" stroke-width="3" stroke-linecap="round"/>
-  <path d="M 10 100 H 190" stroke="#c6d6cb" stroke-width="2" stroke-linecap="round"/>
-  <g id="mci-ticks" stroke="#839d91" stroke-width="1.7"><path d="M10 100 L21 100"/><path d="M36.36 36.36 L44.14 44.14"/><path d="M100 10 L100 22"/><path d="M163.64 36.36 L155.86 44.14"/><path d="M190 100 L179 100"/></g>
-  <text id="mci-left-hour" x="20" y="94" text-anchor="middle" font-size="12" font-weight="700" fill="#58796e">6</text>
-  <text id="mci-top-hour" x="100" y="34" text-anchor="middle" font-size="12" font-weight="700" fill="#58796e">12</text>
-  <text id="mci-right-hour" x="180" y="94" text-anchor="middle" font-size="12" font-weight="700" fill="#58796e">18</text>
-  <g id="mci-sun"><circle r="9" fill="#f3b951" stroke="#fff7d9" stroke-width="2.5"/></g>
-  </svg></div><div class="mci-clock-copy"><div class="mci-clock-title">世界の日時計</div><div class="mci-clock-time"><i class="mci-clock-dot" style="background:#d6ac69"></i>ゲーム世界 <strong id="mci-game-label">--:--</strong></div><div class="mci-clock-note">この世界では、12時間で太陽がひとめぐり。<br>あなたの世界の2倍の速さで、朝と夜が訪れます。</div></div>`;
-  home.insertBefore(wrap,home.firstChild);
-  const pad=n=>String(n).padStart(2,'0');
-  function update(){let g;try{g=typeof gameNow==='function'?new Date(gameNow()):null}catch(e){g=null}
-   const orb=wrap.querySelector('#mci-sun');
-   if(g&&Number.isFinite(g.getTime())){
-    const gh=g.getUTCHours()+g.getUTCMinutes()/60+g.getUTCSeconds()/3600;
-    const day=gh>=6&&gh<18;
-    const progress=day?(gh-6)/12:(gh>=18?(gh-18)/12:(gh+6)/12);
-    const theta=Math.PI*(1-progress);
-    const x=100+90*Math.cos(theta),y=100-90*Math.sin(theta);
-    orb.removeAttribute('visibility');orb.setAttribute('transform','translate('+x.toFixed(2)+' '+y.toFixed(2)+')');
-    orb.innerHTML=day?'<circle r="9" fill="#f3b951" stroke="#fff7d9" stroke-width="2.5"/>':'<path d="M 2 -10 A 10 10 0 1 0 10 6 A 8.5 8.5 0 0 1 2 -10" fill="#8197b7" stroke="#f8f9fd" stroke-width="1.5"/>';
-    wrap.querySelector('#mci-sky-field').setAttribute('fill',day?'url(#mci-meter-day)':'url(#mci-meter-night)');
-    wrap.querySelector('#mci-left-hour').textContent=day?'6':'18';
-    wrap.querySelector('#mci-top-hour').textContent=day?'12':'0';
-    wrap.querySelector('#mci-right-hour').textContent=day?'18':'6';
-    wrap.querySelector('#mci-game-label').textContent=pad(g.getUTCHours())+':'+pad(g.getUTCMinutes());
-   }else{orb.setAttribute('visibility','hidden');wrap.querySelector('#mci-game-label').textContent='確認中'}
-  }update();setInterval(update,1000);
- }
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
-})();
-</script>
+
 <script id="mci-v10-world-script">
 (function(){
   const shop=document.getElementById('koalaShopScreen'),art=shop.querySelector('.rpg-art.shop'),dialog=shop.querySelector('.rpg-shop-menu'),speaker=shop.querySelector('.rpg-speaker-name');
@@ -3700,4 +3701,35 @@ document.addEventListener("click",function(ev){
 },true);
 })();
 </script>
-</body></html>
+<script id="mci-green-clock-script">
+(function(){
+const symbols=[
+'<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M5 35h38" stroke="#b47b3f" stroke-width="3" stroke-linecap="round"/><path d="M11 35a13 13 0 0 1 26 0" fill="#f7bd56"/><path d="M24 4v6M9 12l4 4M39 12l-4 4M4 26h5M44 26h-5" stroke="#e9a54e" stroke-width="3" stroke-linecap="round"/></svg>',
+'<svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="12" fill="#f8c64b"/><g stroke="#e9b64a" stroke-width="3" stroke-linecap="round"><path d="M24 3v6M24 39v6M3 24h6M39 24h6M9 9l4 4M35 35l4 4M39 9l-4 4M13 35l-4 4"/></g></svg>',
+'<svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="28" r="15" fill="#ef9c65"/><path d="M10 34a14 14 0 0 1 28 0" fill="#f8ca74"/><path d="M4 35h40" stroke="#b96e53" stroke-width="3" stroke-linecap="round"/></svg>',
+'<svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21" fill="#7177b5"/><path d="M30 9a16 16 0 1 0 9 27A16 16 0 0 1 30 9" fill="#ffe28b"/><path d="M35 11l1.5 4.5L41 17l-4.5 1.5L35 23l-1.5-4.5L29 17l4.5-1.5z" fill="#ffe28b"/></svg>'
+];
+const villageLines=['村のあちこちで、朝の支度が始まった','村のどこかで、楽しそうな話し声がする','夕焼けが村の屋根をやさしく染めている','夜風が村を通り抜ける'];
+function worldVoice(index){
+ const shop=mciShopState();
+ const tanuki=tanuukiLocation();
+ return [villageLines[period(new Date(gameNow()).getUTCHours())],
+ miningTripStatus==='active'?'鉱山の方から、カンカンと音が聞こえる':({working:'鉱山の方から、カンカンと音が聞こえる',tavern:'酒場が騒がしい',sleeping:'鉱山タヌキのいびきが聞こえる',mine:'鉱山タヌキは出勤の準備をしているようだ'})[tanuki],
+ ({koala:'道具屋から、コーラさんの元気な声が聞こえる',cats:'道具屋は営業中です',closed:'道具屋は閉まっている。次の開店を待とう'})[shop],
+ shop==='cats'?'ステージには誰もいない。音楽はいつでも聴けるよ':'ステージにはキャッツがいるようだ'][index];
+}
+const period=h=>h>=5&&h<11?0:h>=11&&h<17?1:h>=17&&h<19?2:3;
+function start(){
+const home=document.getElementById('homeScreen');if(!home||document.getElementById('mci-clock'))return;
+const root=document.createElement('section');root.id='mci-clock';root.innerHTML='<div class="wc-heading">🌿 ワールドクロック</div><div class="wc-grid"><div class="wc-part"><div class="wc-label">現実時間（日本）</div><div class="wc-pill"><span class="wc-symbol" id="wc-jp-symbol"></span><span class="wc-jptime" id="wc-jp-time">--:--</span></div></div><div class="wc-part"><div class="wc-label">ゲーム内時間</div><div class="wc-pill"><span class="wc-symbol wc-game-symbol" id="wc-game-symbol"></span></div></div><button type="button" class="wc-listen" id="wc-listen">♧ 世界の声</button></div><div class="wc-popup" id="wc-popup" role="status" aria-live="polite"></div>';
+home.insertBefore(root,home.firstChild);
+const jp=root.querySelector('#wc-jp-time'),jps=root.querySelector('#wc-jp-symbol'),gs=root.querySelector('#wc-game-symbol'),pop=root.querySelector('#wc-popup');
+const gameHour=()=>new Date(typeof gameNow==='function'?gameNow():Date.now()).getUTCHours();
+let voiceIndex=0;
+function update(){const parts=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Tokyo',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(new Date());const jpSlot=period(Number(parts.slice(0,2))),gameSlot=period(gameHour());jp.textContent=parts;if(jps.dataset.slot!==String(jpSlot)){jps.innerHTML=symbols[jpSlot];jps.dataset.slot=jpSlot}if(gs.dataset.slot!==String(gameSlot)){gs.innerHTML=symbols[gameSlot];gs.dataset.slot=gameSlot}root.setAttribute('aria-label','日本時間 '+parts+' ゲーム内 '+['朝','昼','夕方','夜'][gameSlot]);}
+root.querySelector('#wc-listen').addEventListener('click',()=>{pop.textContent=worldVoice(voiceIndex);voiceIndex=(voiceIndex+1)%4;pop.classList.remove('wc-pop');void pop.offsetWidth;pop.classList.add('wc-pop')});
+update();setInterval(update,1000);
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+})();
+</script></body></html>
